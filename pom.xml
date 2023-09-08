@@ -40,8 +40,8 @@
         <pagehelper.version>5.2.0</pagehelper.version>
         <druid.version>1.1.23</druid.version>
         <hutool.version>5.4.0</hutool.version>
-        <mybatis-generator.version>1.4.0</mybatis-generator.version>
         <mybatis.version>3.5.5</mybatis.version>
+        <mybatis-plus-boot-starter.version>3.3.1</mybatis-plus-boot-starter.version>
         <mysql-connector.version>8.0.20</mysql-connector.version>
         <spring-data-commons.version>2.3.0.RELEASE</spring-data-commons.version>
         <jjwt.version>0.9.1</jjwt.version>
@@ -52,7 +52,7 @@
         <knife4j.version>2.0.4</knife4j.version>
         <nimbus-jose-jwt.version>8.16</nimbus-jose-jwt.version>
         <mall-common.version>1.0-SNAPSHOT</mall-common.version>
-        <mall-mbg.version>1.0-SNAPSHOT</mall-mbg.version>
+        <mall-entity.version>1.0-SNAPSHOT</mall-entity.version>
     </properties>
 
     <dependencies>
@@ -143,17 +143,17 @@
                 <artifactId>knife4j-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
-            <!-- MyBatis 生成器 -->
-            <dependency>
-                <groupId>org.mybatis.generator</groupId>
-                <artifactId>mybatis-generator-core</artifactId>
-                <version>${mybatis-generator.version}</version>
-            </dependency>
             <!-- MyBatis-->
             <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
+            </dependency>
+            <!-- MybatisPlus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus-boot-starter.version}</version>
             </dependency>
             <!--Mysql数据库驱动-->
             <dependency>
