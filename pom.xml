@@ -86,6 +86,18 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--mall-common 模块-->
+            <dependency>
+                <groupId>com.aiyangniu</groupId>
+                <artifactId>mall-common</artifactId>
+                <version>${mall-common.version}</version>
+            </dependency>
+            <!--mall-entity 模块-->
+            <dependency>
+                <groupId>com.aiyangniu</groupId>
+                <artifactId>mall-entity</artifactId>
+                <version>${mall-entity.version}</version>
+            </dependency>
             <!--Spring Cloud 相关依赖-->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -101,12 +113,6 @@
                 <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <!--mall通用模块-->
-            <dependency>
-                <groupId>com.aiyangniu</groupId>
-                <artifactId>mall-common</artifactId>
-                <version>${mall-common.version}</version>
             </dependency>
             <!--MyBatis分页插件starter-->
             <dependency>
