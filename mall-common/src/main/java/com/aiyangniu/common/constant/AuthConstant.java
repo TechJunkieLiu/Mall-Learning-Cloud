@@ -26,7 +26,7 @@ public interface AuthConstant {
     /**
      * 前台商城client_id
      */
-    String PORTAL_CLIENT_ID = "gate-app";
+    String GATE_CLIENT_ID = "gate-app";
 
     /**
      * 后台管理接口路径匹配
