@@ -51,6 +51,8 @@
         <minio.version>7.1.0</minio.version>
         <knife4j.version>2.0.4</knife4j.version>
         <nimbus-jose-jwt.version>8.16</nimbus-jose-jwt.version>
+        <UserAgentUtils.version>1.2.4</UserAgentUtils.version>
+        <ikanalyzer.version>2012_u6</ikanalyzer.version>
         <mall-common.version>1.0-SNAPSHOT</mall-common.version>
         <mall-entity.version>1.0-SNAPSHOT</mall-entity.version>
     </properties>
@@ -208,6 +210,18 @@
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
+            </dependency>
+            <!-- 解析User-Agent类库 -->
+            <dependency>
+                <groupId>nl.bitwalker</groupId>
+                <artifactId>UserAgentUtils</artifactId>
+                <version>${UserAgentUtils.version}</version>
+            </dependency>
+            <!-- IKAnalyzer中文分词工具包 -->
+            <dependency>
+                <groupId>com.janeluo</groupId>
+                <artifactId>ikanalyzer</artifactId>
+                <version>${ikanalyzer.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
