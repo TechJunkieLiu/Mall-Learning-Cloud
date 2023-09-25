@@ -11,7 +11,7 @@ import java.io.StringReader;
 import java.util.*;
 
 /**
- * 敏感词处理工具类
+ * 敏感词工具类
  *
  * @author lzq
  * @date 2023/09/22
@@ -22,7 +22,7 @@ public class SensitiveWordUtil implements ApplicationRunner {
     /**
      * 敏感词集合
      */
-    public static HashMap sensitiveWordMap;
+    private static HashMap sensitiveWordMap;
 
     /**
      * 初始化敏感词库（基于数据库存储）

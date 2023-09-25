@@ -53,6 +53,10 @@
             <groupId>com.janeluo</groupId>
             <artifactId>ikanalyzer</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

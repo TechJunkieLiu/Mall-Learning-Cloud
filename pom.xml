@@ -53,6 +53,7 @@
         <nimbus-jose-jwt.version>8.16</nimbus-jose-jwt.version>
         <UserAgentUtils.version>1.2.4</UserAgentUtils.version>
         <ikanalyzer.version>2012_u6</ikanalyzer.version>
+        <thumbnailator.version>0.4.19</thumbnailator.version>
         <mall-common.version>1.0-SNAPSHOT</mall-common.version>
         <mall-entity.version>1.0-SNAPSHOT</mall-entity.version>
     </properties>
@@ -222,6 +223,12 @@
                 <groupId>com.janeluo</groupId>
                 <artifactId>ikanalyzer</artifactId>
                 <version>${ikanalyzer.version}</version>
+            </dependency>
+            <!-- 图片处理 -->
+            <dependency>
+                <groupId>net.coobird</groupId>
+                <artifactId>thumbnailator</artifactId>
+                <version>${thumbnailator.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
