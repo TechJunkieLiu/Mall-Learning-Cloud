@@ -1,6 +1,5 @@
 package com.aiyangniu.search;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -11,7 +10,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @author lzq
  * @date 2023/09/08
  */
-@MapperScan("com.aiyangniu.search.mapper")
 @EnableDiscoveryClient
 @SpringBootApplication
 public class MallSearchApp {

@@ -20,7 +20,6 @@
         <dependency>
             <groupId>com.aiyangniu</groupId>
             <artifactId>mall-entity</artifactId>
-            <version>1.0-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>

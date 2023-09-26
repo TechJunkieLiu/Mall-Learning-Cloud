@@ -57,7 +57,7 @@ public class PmsProduct implements Serializable {
     private Integer newStatus;
 
     @ApiModelProperty(value = "推荐状态；0->不推荐；1->推荐")
-    private Integer recommandStatus;
+    private Integer recommendStatus;
 
     @ApiModelProperty(value = "审核状态：0->未审核；1->审核通过")
     private Integer verifyStatus;

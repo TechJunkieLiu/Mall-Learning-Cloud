@@ -52,7 +52,7 @@
         <knife4j.version>2.0.4</knife4j.version>
         <nimbus-jose-jwt.version>8.16</nimbus-jose-jwt.version>
         <UserAgentUtils.version>1.2.4</UserAgentUtils.version>
-        <ikanalyzer.version>2012_u6</ikanalyzer.version>
+        <ik-analyzer.version>8.4.0</ik-analyzer.version>
         <thumbnailator.version>0.4.19</thumbnailator.version>
         <mall-common.version>1.0-SNAPSHOT</mall-common.version>
         <mall-entity.version>1.0-SNAPSHOT</mall-entity.version>
@@ -220,9 +220,9 @@
             </dependency>
             <!-- IKAnalyzer中文分词工具包 -->
             <dependency>
-                <groupId>com.janeluo</groupId>
-                <artifactId>ikanalyzer</artifactId>
-                <version>${ikanalyzer.version}</version>
+                <groupId>com.github.magese</groupId>
+                <artifactId>ik-analyzer</artifactId>
+                <version>${ik-analyzer.version}</version>
             </dependency>
             <!-- 图片处理 -->
             <dependency>

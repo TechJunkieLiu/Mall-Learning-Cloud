@@ -70,6 +70,7 @@ public class SensitiveWordUtil implements ApplicationRunner {
     private static List segment(String text) throws IOException {
         List<String> list = new ArrayList<>();
         StringReader stringReader = new StringReader(text);
+        // true-最大颗粒切分 false-最细颗粒切分
         IKSegmenter ikSegmenter = new IKSegmenter(stringReader, true);
         Lexeme lex;
         while ((lex = ikSegmenter.next()) != null) {
