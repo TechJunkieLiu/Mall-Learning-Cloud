@@ -15,12 +15,12 @@ import java.util.Map;
  * @author lzq
  * @date 2023/09/22
  */
-public class AgentUtil {
+public class ClientAgentUtil {
 
     /**
      * Servlet获取客户端相关信息
      */
-    public static String getAgentInfo(HttpServletRequest request) {
+    public static String getClientInfo(HttpServletRequest request) {
         // 解析agent字符串
         UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
         // 获取浏览器对象

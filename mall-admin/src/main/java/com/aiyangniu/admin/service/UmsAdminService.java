@@ -1,5 +1,6 @@
 package com.aiyangniu.admin.service;
 
+import com.aiyangniu.common.api.CommonResult;
 import com.aiyangniu.common.domain.UserDTO;
 import com.aiyangniu.entity.model.pojo.ums.UmsAdmin;
 import com.aiyangniu.entity.model.pojo.ums.UmsRole;
@@ -37,4 +38,13 @@ public interface UmsAdminService {
      * @return 角色列表
      */
     List<UmsRole> getRoleList(Long adminId);
+
+    /**
+     * 登录功能
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @return 生成的token
+     */
+    String login(String username, String password);
 }
