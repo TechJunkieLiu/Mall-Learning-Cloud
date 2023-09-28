@@ -75,7 +75,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     @Override
-    public String login(String username, String password) {
+    public CommonResult login(String username, String password) {
         if(StrUtil.isEmpty(username) || StrUtil.isEmpty(password)){
             Asserts.fail("用户名或密码不能为空！");
         }
@@ -89,7 +89,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         if(ResultCode.SUCCESS.getCode() == restResult.getCode() && restResult.getData() != null){
             insertLoginLog(username);
         }
-        return (String) restResult.getData();
+        return restResult;
     }
 
     /**

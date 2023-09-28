@@ -7,6 +7,7 @@ import com.aiyangniu.search.domain.EsProductRelatedInfo;
 import com.aiyangniu.search.mapper.EsProductMapper;
 import com.aiyangniu.search.reposiyory.EsProductRepository;
 import com.aiyangniu.search.service.EsProductService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.lucene.search.function.FunctionScoreQuery;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -47,14 +48,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class EsProductServiceImpl implements EsProductService {
 
-    @Autowired
-    private EsProductMapper esProductMapper;
-    @Autowired
-    private EsProductRepository esProductRepository;
-    @Autowired
-    private ElasticsearchRestTemplate elasticsearchRestTemplate;
+    private final EsProductMapper esProductMapper;
+    private final EsProductRepository esProductRepository;
+    private final ElasticsearchRestTemplate elasticsearchRestTemplate;
 
     @Override
     public int importAll() {

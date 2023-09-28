@@ -1,7 +1,7 @@
 package com.aiyangniu.demo.service;
 
 import com.aiyangniu.common.api.CommonResult;
-import com.aiyangniu.demo.dto.UmsAdminLoginParam;
+import com.aiyangniu.demo.dto.UmsAdminLoginDTO;
 import com.aiyangniu.demo.fallback.FeignAdminFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface FeignAdminService {
 
     @PostMapping("/admin/login")
-    CommonResult login(@RequestBody UmsAdminLoginParam loginParam);
+    CommonResult login(@RequestBody UmsAdminLoginDTO loginParam);
 
     @GetMapping("/brand/listAll")
     CommonResult getList();

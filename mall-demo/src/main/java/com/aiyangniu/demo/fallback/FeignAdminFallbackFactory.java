@@ -1,7 +1,7 @@
 package com.aiyangniu.demo.fallback;
 
 import com.aiyangniu.common.api.CommonResult;
-import com.aiyangniu.demo.dto.UmsAdminLoginParam;
+import com.aiyangniu.demo.dto.UmsAdminLoginDTO;
 import com.aiyangniu.demo.service.FeignAdminService;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class FeignAdminFallbackFactory implements FallbackFactory<FeignAdminServ
     public FeignAdminService create(Throwable throwable) {
         return new FeignAdminService() {
             @Override
-            public CommonResult login(UmsAdminLoginParam loginParam) {
+            public CommonResult login(UmsAdminLoginDTO dto) {
                 return CommonResult.failed(throwable.getMessage());
             }
 

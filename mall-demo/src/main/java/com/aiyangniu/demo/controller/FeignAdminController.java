@@ -1,7 +1,7 @@
 package com.aiyangniu.demo.controller;
 
 import com.aiyangniu.common.api.CommonResult;
-import com.aiyangniu.demo.dto.UmsAdminLoginParam;
+import com.aiyangniu.demo.dto.UmsAdminLoginDTO;
 import com.aiyangniu.demo.service.FeignAdminService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class FeignAdminController {
     private final FeignAdminService feignAdminService;
 
     @PostMapping("/login")
-    public CommonResult login(@RequestBody UmsAdminLoginParam loginParam) {
-        return feignAdminService.login(loginParam);
+    public CommonResult login(@RequestBody UmsAdminLoginDTO dto) {
+        return feignAdminService.login(dto);
     }
 
     @GetMapping("/getBrandList")

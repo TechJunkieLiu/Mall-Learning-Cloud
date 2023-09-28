@@ -21,29 +21,29 @@ public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
     private final RedisService redisService;
 
     @Value("${redis.database}")
-    private String REDIS_DATABASE;
+    private String redisDatabase;
 
     @Value("${redis.expire.common}")
-    private Long REDIS_EXPIRE;
+    private Long redisExpire;
 
     @Value("${redis.expire.authCode}")
-    private Long REDIS_EXPIRE_AUTH_CODE;
+    private Long redisExpireAuthCode;
 
     @Value("${redis.key.member}")
-    private String REDIS_KEY_MEMBER;
+    private String redisKeyMember;
 
     @Value("${redis.key.authCode}")
-    private String REDIS_KEY_AUTH_CODE;
+    private String redisKeyAuthCode;
 
     @Override
     public UmsMember getMember(Long memberId) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_MEMBER + ":" + memberId;
+        String key = redisDatabase + ":" + redisKeyMember + ":" + memberId;
         return (UmsMember) redisService.get(key);
     }
 
     @Override
     public void setMember(UmsMember member) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_MEMBER + ":" + member.getId();
-        redisService.set(key, member, REDIS_EXPIRE);
+        String key = redisDatabase + ":" + redisKeyMember + ":" + member.getId();
+        redisService.set(key, member, redisExpire);
     }
 }

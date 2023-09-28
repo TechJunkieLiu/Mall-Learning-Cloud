@@ -76,7 +76,7 @@ public class IpUtil {
      * 支持反向代理，比如 Nginx，但不支持正向代理，比如客户端浏览器自己使用代理工具
      * 场景：向不同省份的用户展示不同的内容
      */
-    public static String getClientIP(HttpServletRequest request){
+    public static String getClientIp(HttpServletRequest request){
         String xip = request.getHeader("X-Real-IP");
         String xFor = request.getHeader("X-Forwarded-For");
         if (StrUtil.isNotEmpty(xFor) && !UNKNOWN.equalsIgnoreCase(xFor)){

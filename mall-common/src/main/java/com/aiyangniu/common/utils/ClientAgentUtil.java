@@ -28,7 +28,7 @@ public class ClientAgentUtil {
         // 获取操作系统对象
         OperatingSystem operatingSystem = userAgent.getOperatingSystem();
         // 组装返回值
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(16);
         map.put("浏览器名", browser.getName());
         map.put("浏览器类型", browser.getBrowserType());
         map.put("浏览器家族", browser.getGroup());

@@ -34,6 +34,6 @@ public class UmsAdminController {
     @ApiOperation(value = "登录以后返回token")
     @PostMapping(value = "/login")
     public CommonResult login(@Validated @RequestBody UmsAdminLoginDTO dto) {
-        return CommonResult.success(umsAdminService.login(dto.getUsername(), dto.getPassword()));
+        return umsAdminService.login(dto.getUsername(), dto.getPassword());
     }
 }

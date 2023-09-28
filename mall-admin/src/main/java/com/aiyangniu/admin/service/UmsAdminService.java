@@ -46,5 +46,5 @@ public interface UmsAdminService {
      * @param password 密码
      * @return 生成的token
      */
-    String login(String username, String password);
+    CommonResult login(String username, String password);
 }
