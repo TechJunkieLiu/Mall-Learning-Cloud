@@ -26,7 +26,7 @@ public class RabbitMqConfig {
     }
 
     /**
-     * 订单延迟队列队列所绑定的交换机
+     * 订单延迟队列所绑定的交换机
      */
     @Bean
     DirectExchange orderTtlDirect() {
@@ -46,6 +46,7 @@ public class RabbitMqConfig {
 
     /**
      * 订单延迟队列（死信队列）
+     *
      */
     @Bean
     public Queue orderTtlQueue() {
@@ -62,7 +63,7 @@ public class RabbitMqConfig {
      * 将订单队列绑定到交换机
      */
     @Bean
-    Binding orderBinding(DirectExchange orderDirect,Queue orderQueue){
+    Binding orderBinding(DirectExchange orderDirect, Queue orderQueue){
         return BindingBuilder
                 .bind(orderQueue)
                 .to(orderDirect)
@@ -73,7 +74,7 @@ public class RabbitMqConfig {
      * 将订单延迟队列绑定到交换机
      */
     @Bean
-    Binding orderTtlBinding(DirectExchange orderTtlDirect,Queue orderTtlQueue){
+    Binding orderTtlBinding(DirectExchange orderTtlDirect, Queue orderTtlQueue){
         return BindingBuilder
                 .bind(orderTtlQueue)
                 .to(orderTtlDirect)

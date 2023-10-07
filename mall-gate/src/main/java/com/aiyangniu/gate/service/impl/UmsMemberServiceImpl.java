@@ -67,4 +67,13 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public UmsMember getById(Long id) {
         return umsMemberMapper.selectById(id);
     }
+
+    @Override
+    public void updateIntegration(Long id, Integer integration) {
+        UmsMember record = new UmsMember();
+        record.setId(id);
+        record.setIntegration(integration);
+        umsMemberMapper.updateById(record);
+        umsMemberCacheService.delMember(id);
+    }
 }

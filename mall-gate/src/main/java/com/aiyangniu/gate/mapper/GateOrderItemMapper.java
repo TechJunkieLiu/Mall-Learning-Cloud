@@ -11,7 +11,7 @@ import java.util.List;
  * @author lzq
  * @date 2023/09/20
  */
-public interface EnterOrderItemMapper {
+public interface GateOrderItemMapper {
 
     /**
      * 批量插入

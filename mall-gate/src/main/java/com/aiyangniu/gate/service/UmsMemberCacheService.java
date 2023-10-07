@@ -24,4 +24,11 @@ public interface UmsMemberCacheService {
      * @param member 会员信息
      */
     void setMember(UmsMember member);
+
+    /**
+     * 删除会员用户缓存
+     *
+     * @param memberId 会员ID
+     */
+    void delMember(Long memberId);
 }

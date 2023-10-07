@@ -2,11 +2,13 @@ package com.aiyangniu.gate.service.impl;
 
 import com.aiyangniu.common.service.RedisService;
 import com.aiyangniu.entity.model.pojo.ums.UmsMember;
+import com.aiyangniu.gate.mapper.UmsMemberMapper;
 import com.aiyangniu.gate.service.UmsMemberCacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 /**
  * 会员信息缓存实现类
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
 
     private final RedisService redisService;
+    private final UmsMemberMapper umsMemberMapper;
 
     @Value("${redis.database}")
     private String redisDatabase;
@@ -45,5 +48,14 @@ public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
     public void setMember(UmsMember member) {
         String key = redisDatabase + ":" + redisKeyMember + ":" + member.getId();
         redisService.set(key, member, redisExpire);
+    }
+
+    @Override
+    public void delMember(Long memberId) {
+        UmsMember umsMember = umsMemberMapper.selectById(memberId);
+        if (!ObjectUtils.isEmpty(umsMember)) {
+            String key = redisDatabase + ":" + redisKeyMember + ":" + umsMember.getUsername();
+            redisService.del(key);
+        }
     }
 }

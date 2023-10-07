@@ -16,7 +16,7 @@ import java.util.Date;
  * @date 2023/09/20
  */
 @Data
-@ApiModel(value = "sms_couponHistory", description = "优惠券使用、领取历史表实体")
+@ApiModel(value = "sms_coupon_history", description = "优惠券使用、领取历史表实体")
 public class SmsCouponHistory implements Serializable {
 
     private static final long serialVersionUID = -3507151381847816419L;

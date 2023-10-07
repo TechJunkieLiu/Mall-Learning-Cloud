@@ -13,7 +13,7 @@ import java.util.List;
  * @author lzq
  * @date 2023/09/20
  */
-public interface EnterProductMapper {
+public interface GateProductMapper {
 
     /**
      * 获取促销商品信息列表

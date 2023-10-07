@@ -12,7 +12,7 @@ import java.util.List;
  * @author lzq
  * @date 2023/09/20
  */
-public interface EnterOrderMapper {
+public interface GateOrderMapper {
 
     /**
      * 获取超时订单

@@ -34,4 +34,12 @@ public interface UmsMemberService {
      * @return 会员信息
      */
     UmsMember getById(Long id);
+
+    /**
+     * 根据会员id修改会员积分
+     *
+     * @param id 会员ID
+     * @param integration 会员积分
+     */
+    void updateIntegration(Long id, Integer integration);
 }
