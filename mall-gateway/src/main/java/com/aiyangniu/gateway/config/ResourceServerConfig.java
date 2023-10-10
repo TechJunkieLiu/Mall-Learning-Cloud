@@ -3,7 +3,8 @@ package com.aiyangniu.gateway.config;
 import cn.hutool.core.util.ArrayUtil;
 import com.aiyangniu.common.constant.AuthConstant;
 import com.aiyangniu.gateway.authorization.AuthorizationManager;
-import com.aiyangniu.gateway.component.ServerAuthAccessResponse;
+import com.aiyangniu.gateway.component.RestAuthenticationEntryPoint;
+import com.aiyangniu.gateway.component.RestfulAccessDeniedHandler;
 import com.aiyangniu.gateway.filter.IgnoreUrlsRemoveJwtFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -32,14 +33,15 @@ import reactor.core.publisher.Mono;
 public class ResourceServerConfig {
     private final AuthorizationManager authorizationManager;
     private final IgnoreUrlsConfig ignoreUrlsConfig;
-    private final ServerAuthAccessResponse serverAuthAccessResponse;
+    private final RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     private final IgnoreUrlsRemoveJwtFilter ignoreUrlsRemoveJwtFilter;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
         // 自定义处理JWT请求头过期或签名错误的结果
-        http.oauth2ResourceServer().authenticationEntryPoint(serverAuthAccessResponse);
+        http.oauth2ResourceServer().authenticationEntryPoint(restAuthenticationEntryPoint);
         // 对白名单路径，直接移除JWT请求头
         http.addFilterBefore(ignoreUrlsRemoveJwtFilter, SecurityWebFiltersOrder.AUTHENTICATION);
         http.authorizeExchange()
@@ -49,9 +51,10 @@ public class ResourceServerConfig {
                 .anyExchange().access(authorizationManager)
                 .and().exceptionHandling()
                 // 处理未授权
-                .accessDeniedHandler(serverAuthAccessResponse)
+                .accessDeniedHandler(restfulAccessDeniedHandler)
                 // 处理未认证
-                .authenticationEntryPoint(serverAuthAccessResponse)
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                // 关闭csrf
                 .and().csrf().disable();
         return http.build();
     }

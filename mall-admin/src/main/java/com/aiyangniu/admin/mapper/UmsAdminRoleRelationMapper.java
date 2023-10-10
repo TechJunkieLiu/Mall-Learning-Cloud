@@ -22,4 +22,11 @@ public interface UmsAdminRoleRelationMapper extends BaseMapper<UmsAdminRoleRelat
      * @return 角色列表
      */
     List<UmsRole> getRoleList(@Param("adminId") Long adminId);
+
+    /**
+     * 批量插入新的用户角色关系
+     *
+     * @param list 用户角色列表
+     */
+    void insertList(@Param("list") List<UmsAdminRoleRelation> list);
 }

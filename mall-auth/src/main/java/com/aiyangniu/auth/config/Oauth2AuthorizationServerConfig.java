@@ -50,8 +50,7 @@ public class Oauth2AuthorizationServerConfig extends AuthorizationServerConfigur
                 // 客户端可以使用的授权类型，默认为空
                 .authorizedGrantTypes("password", "refresh_token")
                 // token有效期
-//                .accessTokenValiditySeconds(3600*24)
-                .accessTokenValiditySeconds(10)
+                .accessTokenValiditySeconds(120)
                 // 刷新token有效期
                 .refreshTokenValiditySeconds(3600*24*7)
                 .and()
@@ -59,8 +58,7 @@ public class Oauth2AuthorizationServerConfig extends AuthorizationServerConfigur
                 .secret(passwordEncoder.encode("123456"))
                 .scopes("all")
                 .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(10)
-//                .accessTokenValiditySeconds(3600*24)
+                .accessTokenValiditySeconds(120)
                 .refreshTokenValiditySeconds(3600*24*7);
     }
 
