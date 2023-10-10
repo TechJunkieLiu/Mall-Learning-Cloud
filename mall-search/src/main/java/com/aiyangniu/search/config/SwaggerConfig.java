@@ -3,7 +3,7 @@ package com.aiyangniu.search.config;
 import com.aiyangniu.common.config.BaseSwaggerConfig;
 import com.aiyangniu.common.domain.SwaggerProperties;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 /**
  * Swagger API文档相关配置
@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @date 2023/09/25
  */
 @Configuration
-@EnableSwagger2
+@EnableSwagger2WebMvc
 public class SwaggerConfig extends BaseSwaggerConfig {
 
     @Override

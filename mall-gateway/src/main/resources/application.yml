@@ -42,7 +42,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: 'http://localhost:8802/mall-auth/rsa/publicKey' #配置RSA的公钥访问地址
+          jwk-set-uri: 'http://localhost:8805/mall-auth/rsa/publicKey' #配置RSA的公钥访问地址
   redis:
     database: 0
     port: 6379
@@ -70,10 +70,10 @@ secure:
       - "/mall-gate/home/**"
       - "/mall-gate/product/**"
       - "/mall-gate/brand/**"
+      - "/mall-gate/gateOrder/cancelOrder"
       - "/mall-admin/admin/login"
       - "/mall-admin/admin/register"
       - "/mall-admin/minio/upload"
-      - "/gateOrder/cancelOrder"
 management: #开启SpringBoot Admin的监控
   endpoints:
     web:

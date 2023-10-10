@@ -1,6 +1,7 @@
 package com.aiyangniu.common.config;
 
 import com.aiyangniu.common.domain.SwaggerProperties;
+import io.swagger.models.auth.In;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -25,11 +26,25 @@ public abstract class BaseSwaggerConfig {
     public Docket createRestApi() {
         SwaggerProperties swaggerProperties = swaggerProperties();
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
+                // 是否启用Swagger
+                .enable(true)
+                // 用来创建该API的基本信息，展示在文档的页面中（自定义展示的信息）
                 .apiInfo(apiInfo(swaggerProperties))
+                // 设置哪些接口暴露给Swagger展示
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getApiBasePackage()))
+                // 扫描所有有注解的api，用这种方式更灵活
+//                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                // 指定Controller扫描包路径
+//                .apis(RequestHandlerSelectors.basePackage("com.aiyangniu.admin.controller"))
+                // 扫描所有
+//                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build();
+                // 设置安全模式，swagger可以设置访问token
+//                .securitySchemes(securitySchemes())
+//                .securityContexts(securityContexts())
+//                .pathMapping("/");
         if (swaggerProperties.isEnableSecurity()) {
             docket.securitySchemes(securitySchemes()).securityContexts(securityContexts());
         }
@@ -48,7 +63,7 @@ public abstract class BaseSwaggerConfig {
     private List<ApiKey> securitySchemes() {
         // 设置请求头信息
         List<ApiKey> result = new ArrayList<>();
-        ApiKey apiKey = new ApiKey("Authorization", "Authorization", "header");
+        ApiKey apiKey = new ApiKey("Authorization", "Authorization", In.HEADER.toValue());
         result.add(apiKey);
         return result;
     }

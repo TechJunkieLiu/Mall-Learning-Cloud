@@ -22,10 +22,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                // 关闭csrf
+//                .csrf().disable()
+                .authorizeRequests()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
+                // 允许匿名访问
                 .antMatchers("/rsa/publicKey").permitAll()
                 .antMatchers("/v2/api-docs").permitAll()
+//                .antMatchers("/admin/login").permitAll()
+                // 除上面以外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
     }
 

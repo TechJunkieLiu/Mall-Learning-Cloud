@@ -14,6 +14,7 @@ spring:
       stat-view-servlet: #访问监控网页的登录用户名和密码
         login-username: druid
         login-password: druid
+      time-between-eviction-runs-millis: 600000  #Druid默认每60s运行一次空闲连接回收器，所以超过60s没有使用的连接会被释放，并打印 WARN 日志 discard long time none received connection。出现这个警告可能是业务中执行 SQL 操作的间隔时间比较长。解决办法是，将连接空闲时间 timeBetweenEvictionRunsMillis 设置大一些
   redis:
     host: localhost # Redis服务器地址
     database: 0 # Redis数据库索引（默认为0）
