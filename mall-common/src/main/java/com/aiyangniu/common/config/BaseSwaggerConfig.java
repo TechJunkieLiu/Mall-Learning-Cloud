@@ -2,6 +2,7 @@ package com.aiyangniu.common.config;
 
 import com.aiyangniu.common.domain.SwaggerProperties;
 import io.swagger.models.auth.In;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -22,12 +23,13 @@ import java.util.List;
  */
 public abstract class BaseSwaggerConfig {
 
+    @Value("${spring.profiles.active}")
+    private String env;
+
     @Bean
     public Docket createRestApi() {
         SwaggerProperties swaggerProperties = swaggerProperties();
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
-                // 是否启用Swagger
-                .enable(true)
                 // 用来创建该API的基本信息，展示在文档的页面中（自定义展示的信息）
                 .apiInfo(apiInfo(swaggerProperties))
                 // 设置哪些接口暴露给Swagger展示
@@ -40,12 +42,11 @@ public abstract class BaseSwaggerConfig {
                 // 扫描所有
 //                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
-                .build();
-                // 设置安全模式，swagger可以设置访问token
-//                .securitySchemes(securitySchemes())
-//                .securityContexts(securityContexts())
-//                .pathMapping("/");
+                .build()
+                // 生产环境不创建swagger
+                .enable(!"prod".equals(env));
         if (swaggerProperties.isEnableSecurity()) {
+            // 设置安全模式，swagger可以设置访问token
             docket.securitySchemes(securitySchemes()).securityContexts(securityContexts());
         }
         return docket;
