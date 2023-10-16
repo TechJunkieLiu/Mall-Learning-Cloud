@@ -24,4 +24,12 @@ public interface OmsGateOrderService {
      * @param orderId 订单编号
      */
     void sendDelayMessageCancelOrder(Long orderId);
+
+    /**
+     * 自动取消超时订单
+     *
+     * @return 取消数量
+     */
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    Integer cancelTimeOutOrder();
 }

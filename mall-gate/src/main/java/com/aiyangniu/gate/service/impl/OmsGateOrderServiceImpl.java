@@ -1,5 +1,6 @@
 package com.aiyangniu.gate.service.impl;
 
+import com.aiyangniu.entity.model.bo.OmsOrderDetail;
 import com.aiyangniu.entity.model.pojo.oms.OmsOrder;
 import com.aiyangniu.entity.model.pojo.oms.OmsOrderItem;
 import com.aiyangniu.entity.model.pojo.oms.OmsOrderSetting;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -95,5 +97,35 @@ public class OmsGateOrderServiceImpl implements OmsGateOrderService {
             smsCouponHistory.setUseStatus(useStatus);
             smsCouponHistoryMapper.updateById(smsCouponHistory);
         }
+    }
+
+    @Override
+    public Integer cancelTimeOutOrder() {
+        Integer count = 0;
+        OmsOrderSetting orderSetting = omsOrderSettingMapper.selectById(1L);
+
+        // 查询超时、未支付的订单及订单详情
+        List<OmsOrderDetail> timeOutOrders = gateOrderMapper.getTimeOutOrders(orderSetting.getNormalOrderOvertime());
+        if (CollectionUtils.isEmpty(timeOutOrders)) {
+            return count;
+        }
+        // 修改订单状态为交易取消
+        List<Long> ids = new ArrayList<>();
+        for (OmsOrderDetail timeOutOrder : timeOutOrders) {
+            ids.add(timeOutOrder.getId());
+        }
+        gateOrderMapper.updateOrderStatus(ids, 4);
+        for (OmsOrderDetail timeOutOrder : timeOutOrders) {
+            // 解除订单商品库存锁定
+            gateOrderMapper.releaseSkuStockLock(timeOutOrder.getOrderItemList());
+            // 修改优惠券使用状态
+            updateCouponStatus(timeOutOrder.getCouponId(), timeOutOrder.getMemberId(), 0);
+            // 返还使用积分
+            if (timeOutOrder.getUseIntegration() != null) {
+                UmsMember member = umsMemberService.getById(timeOutOrder.getMemberId());
+                umsMemberService.updateIntegration(timeOutOrder.getMemberId(), member.getIntegration() + timeOutOrder.getUseIntegration());
+            }
+        }
+        return timeOutOrders.size();
     }
 }
