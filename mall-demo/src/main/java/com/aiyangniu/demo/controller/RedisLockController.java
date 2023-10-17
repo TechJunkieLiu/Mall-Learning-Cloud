@@ -100,6 +100,7 @@ public class RedisLockController {
                 redisScript.setScriptText(script);
                 // 设置返回值类型，因为删除判断的时候，默认返回String类型，给其封装为数据类型
                 redisScript.setResultType(Long.class);
+                // 被限定只分配一个内存空间，也就是只能存放一个元素。不像ArrayList不管你是需要多少内存，初始化就会被分配一定空间的内存，就会导致多余内存的浪费
                 stringRedisTemplate.execute(redisScript, Collections.singletonList("lock"), uuid);
                 return user;
             }else {
