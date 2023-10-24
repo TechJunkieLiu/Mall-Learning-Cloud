@@ -15,7 +15,7 @@ public interface OmsGateOrderService {
      *
      * @param orderId 订单ID
      */
-    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Transactional(rollbackFor = RuntimeException.class)
     void cancelOrder(Long orderId);
 
     /**
@@ -30,6 +30,6 @@ public interface OmsGateOrderService {
      *
      * @return 取消数量
      */
-    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Transactional(rollbackFor = RuntimeException.class)
     Integer cancelTimeOutOrder();
 }

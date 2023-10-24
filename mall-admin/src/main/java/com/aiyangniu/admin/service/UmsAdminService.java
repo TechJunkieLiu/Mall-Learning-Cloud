@@ -48,7 +48,7 @@ public interface UmsAdminService {
      * @param roleIds 角色列表
      * @return 修改数量
      */
-    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Transactional(rollbackFor = RuntimeException.class)
     int updateRole(Long adminId, List<Long> roleIds);
 
     /**

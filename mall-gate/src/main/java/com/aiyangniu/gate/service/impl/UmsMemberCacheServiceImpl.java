@@ -1,5 +1,6 @@
 package com.aiyangniu.gate.service.impl;
 
+import com.aiyangniu.common.annotation.CacheException;
 import com.aiyangniu.common.service.RedisService;
 import com.aiyangniu.entity.model.pojo.ums.UmsMember;
 import com.aiyangniu.gate.mapper.UmsMemberMapper;
@@ -57,5 +58,21 @@ public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
             String key = redisDatabase + ":" + redisKeyMember + ":" + umsMember.getUsername();
             redisService.del(key);
         }
+    }
+
+    @CacheException
+    @Override
+    public String getAuthCode(String telephone) {
+        String key = redisDatabase + ":" + redisKeyAuthCode + ":" + telephone;
+        return (String) redisService.get(key);
+    }
+
+    @CacheException
+    @Override
+    public void setAuthCode(String telephone, String authCode) {
+        String key = redisDatabase + ":" + redisKeyAuthCode + ":" + telephone;
+        // 模拟代码异常
+//        int i = 1 / 0;
+        redisService.set(key, authCode, redisExpireAuthCode);
     }
 }

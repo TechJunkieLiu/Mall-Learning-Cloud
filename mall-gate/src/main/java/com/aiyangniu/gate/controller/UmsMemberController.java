@@ -27,4 +27,25 @@ public class UmsMemberController {
     public CommonResult login(@RequestParam String username, @RequestParam String password) {
         return umsMemberService.login(username, password);
     }
+
+    @ApiOperation("会员注册")
+    @PostMapping(value = "/register")
+    public CommonResult register(@RequestParam String username, @RequestParam String password, @RequestParam String telephone, @RequestParam String authCode) {
+        umsMemberService.register(username, password, telephone, authCode);
+        return CommonResult.success(null,"注册成功");
+    }
+
+    @ApiOperation("会员修改密码")
+    @PostMapping(value = "/updatePassword")
+    public CommonResult updatePassword(@RequestParam String telephone, @RequestParam String password, @RequestParam String authCode) {
+        umsMemberService.updatePassword(telephone, password, authCode);
+        return CommonResult.success(null,"密码修改成功");
+    }
+
+    @ApiOperation("获取验证码")
+    @GetMapping(value = "/getAuthCode")
+    public CommonResult getAuthCode(@RequestParam String telephone) {
+        String authCode = umsMemberService.generateAuthCode(telephone);
+        return CommonResult.success(authCode,"获取验证码成功");
+    }
 }

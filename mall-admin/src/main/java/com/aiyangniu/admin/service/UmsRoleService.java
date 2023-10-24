@@ -88,7 +88,7 @@ public interface UmsRoleService {
      * @param menuIds 菜单IDS
      * @return 分配个数
      */
-    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Transactional(rollbackFor = RuntimeException.class)
     int allocMenu(Long roleId, List<Long> menuIds);
 
     /**
@@ -98,6 +98,6 @@ public interface UmsRoleService {
      * @param resourceIds 资源IDS
      * @return 分配个数
      */
-    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Transactional(rollbackFor = RuntimeException.class)
     int allocResource(Long roleId, List<Long> resourceIds);
 }

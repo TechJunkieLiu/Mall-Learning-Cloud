@@ -1,4 +1,4 @@
-package com.aiyangniu.common.log;
+package com.aiyangniu.common.aspect;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
@@ -35,8 +35,8 @@ import java.util.Map;
  * @author lzq
  * @date 2023/09/22
  */
-@Aspect
 @Order(1)
+@Aspect
 @Component
 public class WebLogAspect {
 
