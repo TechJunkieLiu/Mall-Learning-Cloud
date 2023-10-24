@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 自定义Redis分布式锁注解
+ * 自定义Redis分布式锁注解（未启用）
  * AOP处理定时任务，多台同个任务类似抢占，先抢到的则打标识记录在Redis中，根据有无标识去执行任务
  *
  * @author lzq
