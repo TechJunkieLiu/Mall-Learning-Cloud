@@ -1,6 +1,6 @@
 package com.aiyangniu.common.utils;
 
-import cn.hutool.core.util.StrUtil;
+import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,15 +12,19 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 时间日期工具类
+ * 时间日期处理工具类
  *
  * @author lzq
  * @date 2023/09/25
  */
 public class DateUtil {
 
-    private static final String DATE_STR = "yyyyMMdd";
-    private static final String DATE_FORMAT_CN = "yyyy年MM月dd日";
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter DATE_SHORT_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final DateTimeFormatter DATE_TIME_LONG_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmSSS");
+    private static final DateTimeFormatter DATE_SHORT_FORMAT_C = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
+
     private static final String DATE_FORMAT_STR = "yyyy-MM-dd";
     private static final String TIME_FORMAT_STR = "HH:mm:ss";
     private static final String DATE_TIME_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
@@ -87,15 +91,15 @@ public class DateUtil {
     public static Date str2Date(String date){
         SimpleDateFormat simple = null;
         switch (date.trim().length()){
-                // 日期+时间
+            // 日期+时间
             case 19:
                 simple = new SimpleDateFormat(DATE_TIME_FORMAT_STR);
                 break;
-                // 日期
+            // 日期
             case 10:
                 simple = new SimpleDateFormat(DATE_FORMAT_STR);
                 break;
-                // 时间
+            // 时间
             case 8:
                 simple = new SimpleDateFormat(TIME_FORMAT_STR);
                 break;
@@ -116,7 +120,7 @@ public class DateUtil {
      */
     public static String date2Str(Date date, DateTimeFormatter formatter) {
         if (date == null) {
-            return StrUtil.EMPTY;
+            return StringUtils.EMPTY;
         }
         ZoneId zoneId = ZoneId.systemDefault();
         ZonedDateTime zonedDateTime = date.toInstant().atZone(zoneId);

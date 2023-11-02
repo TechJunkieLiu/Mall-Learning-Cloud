@@ -40,6 +40,10 @@
         <pagehelper.version>5.2.0</pagehelper.version>
         <druid.version>1.1.23</druid.version>
         <hutool.version>5.4.0</hutool.version>
+        <easyexcel.version>3.0.5</easyexcel.version>
+        <easypoi-base.version>4.4.0</easypoi-base.version>
+        <httpcore.version>4.4.13</httpcore.version>
+        <httpclient.version>4.5.14</httpclient.version>
         <mybatis.version>3.5.5</mybatis.version>
         <mybatis-plus-boot-starter.version>3.3.1</mybatis-plus-boot-starter.version>
         <mysql-connector.version>8.0.20</mysql-connector.version>
@@ -135,11 +139,35 @@
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
-            <!--Hutool Java工具包-->
+            <!--HuTool工具包-->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+            <!-- EasyExcel -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
+            <!-- EasyPOI -->
+            <dependency>
+                <groupId>cn.afterturn</groupId>
+                <artifactId>easypoi-base</artifactId>
+                <version>${easypoi-base.version}</version>
+            </dependency>
+            <!-- 文件上传 -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${httpcore.version}</version>
+            </dependency>
+            <!-- Http工具类 -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
             </dependency>
             <!--Knife4j API文档生产工具-->
             <dependency>

@@ -57,6 +57,22 @@
             <groupId>com.github.magese</groupId>
             <artifactId>ik-analyzer</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.afterturn</groupId>
+            <artifactId>easypoi-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.janeluo</groupId>-->
 <!--            <artifactId>ikanalyzer</artifactId>-->
