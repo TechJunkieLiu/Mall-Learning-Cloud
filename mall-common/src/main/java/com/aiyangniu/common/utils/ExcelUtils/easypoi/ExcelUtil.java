@@ -36,68 +36,54 @@ import java.util.NoSuchElementException;
 public class ExcelUtil {
 
     /**
-     * excel导出
-     *
-     * @param list 数据列表
-     * @param fileName 导出时的excel名称
+     * 批量导出
      */
     public static void exportExcel(List<Map<String, Object>> list, String fileName, HttpServletResponse response) throws IOException {
-        defaultExport(list, fileName, response);
-    }
-
-    /**
-     * 默认的excel导出
-     *
-     * @param list 数据列表
-     * @param fileName 导出时的excel名称
-     */
-    private static void defaultExport(List<Map<String, Object>> list, String fileName, HttpServletResponse response) throws IOException {
         // 把数据添加到excel表格中
         Workbook workbook = ExcelExportUtil.exportExcel(list, ExcelType.HSSF);
         downLoadExcel(fileName, response, workbook);
     }
 
     /**
-     * excel导出
+     * 批量导出
      *
-     * @param list 数据列表
-     * @param pojoClass pojo类型
-     * @param fileName 导出时的excel名称
      * @param exportParams 导出参数（标题、sheet名称、是否创建表头、表格类型）
      */
-    private static void defaultExport(List<?> list, Class<?> pojoClass, String fileName, HttpServletResponse response, ExportParams exportParams) throws IOException {
+    public static void exportExcel(List<?> list, Class<?> pojoClass, String fileName, ExportParams exportParams, HttpServletResponse response) throws IOException {
         // 把数据添加到excel表格中
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
         downLoadExcel(fileName, response, workbook);
     }
 
     /**
-     * excel导出
+     * 批量导出
      *
-     * @param list 数据列表
-     * @param pojoClass pojo类型
-     * @param fileName 导出时的excel名称
-     * @param exportParams 导出参数（标题、sheet名称、是否创建表头、表格类型）
-     */
-    public static void exportExcel(List<?> list, Class<?> pojoClass, String fileName, ExportParams exportParams, HttpServletResponse response) throws IOException {
-        defaultExport(list, pojoClass, fileName, response, exportParams);
-    }
-
-    /**
-     * excel导出
-     *
-     * @param list 数据列表
      * @param title 表格内数据标题
      * @param sheetName sheet名称
-     * @param pojoClass pojo类型
-     * @param fileName 导出时的excel名称
      */
     public static void exportExcel(List<?> list, String title, String sheetName, Class<?> pojoClass, String fileName, HttpServletResponse response) throws IOException {
-        defaultExport(list, pojoClass, fileName, response, new ExportParams(title, sheetName, ExcelType.XSSF));
+        // 把数据添加到excel表格中
+        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(title, sheetName, ExcelType.XSSF), pojoClass, list);
+        downLoadExcel(fileName, response, workbook);
     }
 
     /**
-     * 根据模板生成excel后导出
+     * 批量导出
+     *
+     * @param title 表格内数据标题
+     * @param sheetName sheet名称
+     * @param isCreateHeader 是否创建表头
+     */
+    public static void exportExcel(List<?> list, String title, String sheetName, Class<?> pojoClass, String fileName, boolean isCreateHeader, HttpServletResponse response) throws IOException {
+        ExportParams exportParams = new ExportParams(title, sheetName, ExcelType.XSSF);
+        exportParams.setCreateHeadRows(isCreateHeader);
+        // 把数据添加到excel表格中
+        Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
+        downLoadExcel(fileName, response, workbook);
+    }
+
+    /**
+     * 根据模板批量导出
      *
      * @param templatePath 模板路径
      * @param map 数据集合
@@ -109,27 +95,21 @@ public class ExcelUtil {
     }
 
     /**
-     * excel导出
-     *
-     * @param list 数据列表
-     * @param title 表格内数据标题
-     * @param sheetName sheet名称
-     * @param pojoClass pojo类型
-     * @param fileName 导出时的excel名称
-     * @param isCreateHeader 是否创建表头
+     * word模板批量导出
      */
-    public static void exportExcel(List<?> list, String title, String sheetName, Class<?> pojoClass, String fileName, boolean isCreateHeader, HttpServletResponse response) throws IOException {
-        ExportParams exportParams = new ExportParams(title, sheetName, ExcelType.XSSF);
-        exportParams.setCreateHeadRows(isCreateHeader);
-        defaultExport(list, pojoClass, fileName, response, exportParams);
+    public static void WordTemplateExport(Map<String, Object> map, String templatePath, String fileName, HttpServletResponse response) throws Exception {
+        XWPFDocument doc = WordExportUtil.exportWord07(templatePath, map);
+        downLoadWord(fileName, response, doc);
     }
 
     /**
-     * excel下载
-     *
-     * @param fileName 下载时的文件名称
-     * @param workbook excel数据
+     * word模板批量导出多页
      */
+    public static void WordTemplateExportMorePage(List<Map<String, Object>> list, String templatePath, String fileName, HttpServletResponse response) throws Exception {
+        XWPFDocument doc = new ParseWord07().parseWord(templatePath, list);
+        downLoadWord(fileName, response, doc);
+    }
+
     private static void downLoadExcel(String fileName, HttpServletResponse response, Workbook workbook) throws IOException {
         try {
             response.setCharacterEncoding("UTF-8");
@@ -141,11 +121,6 @@ public class ExcelUtil {
         }
     }
 
-    /**
-     * word下载
-     *
-     * @param fileName 下载时的文件名称
-     */
     private static void downLoadWord(String fileName, HttpServletResponse response, XWPFDocument doc) throws IOException {
         try {
             response.setCharacterEncoding("UTF-8");
@@ -157,24 +132,73 @@ public class ExcelUtil {
         }
     }
 
-
     /**
-     * excel导入
+     * 批量导入
      *
-     * @param file excel文件
-     * @param pojoClass pojo类型
+     * @param file 文件
+     * @param titleRows 表格内数据标题行
+     * @param headerRows 表头行
      */
-    public static <T> List<T> importExcel(MultipartFile file, Class<T> pojoClass) throws IOException {
-        return importExcel(file, 1, 1, pojoClass);
+    public static <T> List<T> importExcel(MultipartFile file, Integer titleRows, Integer headerRows, Class<T> pojoClass) throws IOException {
+        if (file == null) {
+            return null;
+        }
+        try {
+            InputStream inputStream = file.getInputStream();
+            ImportParams params = new ImportParams();
+            params.setTitleRows(titleRows);
+            params.setHeadRows(headerRows);
+            params.setSaveUrl("/excel/");
+            params.setNeedSave(true);
+            try {
+                return ExcelImportUtil.importExcel(inputStream, pojoClass, params);
+            } catch (NoSuchElementException e) {
+                throw new IOException("excel文件不能为空");
+            } catch (Exception e) {
+                throw new IOException(e.getMessage());
+            }
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
+        }
     }
 
     /**
-     * excel导入
+     * 批量导入（有错误信息）
      *
-     * @param filePath excel文件路径
+     * @param file 文件
      * @param titleRows 表格内数据标题行
      * @param headerRows 表头行
-     * @param pojoClass pojo类型
+     */
+    public static <T> ExcelImportResult<T> importExcelMore(MultipartFile file, Integer titleRows, Integer headerRows, Class<T> pojoClass) throws IOException {
+        if (file == null) {
+            return null;
+        }
+        try {
+            InputStream inputStream = file.getInputStream();
+            ImportParams params = new ImportParams();
+            params.setTitleRows(titleRows);
+            params.setHeadRows(headerRows);
+            params.setSaveUrl("/excel/");
+            params.setNeedSave(true);
+            params.setNeedVerify(true);
+            try {
+                return ExcelImportUtil.importExcelMore(inputStream, pojoClass, params);
+            } catch (NoSuchElementException e) {
+                throw new IOException("excel文件不能为空");
+            } catch (Exception e) {
+                throw new IOException(e.getMessage());
+            }
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    /**
+     * 批量导入
+     *
+     * @param filePath 文件路径
+     * @param titleRows 表格内数据标题行
+     * @param headerRows 表头行
      */
     public static <T> List<T> importExcel(String filePath, Integer titleRows, Integer headerRows, Class<T> pojoClass) throws IOException {
         if (StrUtil.isBlank(filePath)) {
@@ -195,117 +219,10 @@ public class ExcelUtil {
     }
 
     /**
-     * excel导入
-     *
-     * @param file 上传的文件
-     * @param titleRows 表格内数据标题行
-     * @param headerRows 表头行
-     * @param pojoClass pojo类型
-     */
-    public static <T> List<T> importExcel(MultipartFile file, Integer titleRows, Integer headerRows, Class<T> pojoClass) throws IOException {
-        if (file == null) {
-            return null;
-        }
-        try {
-            return importExcel(file.getInputStream(), titleRows, headerRows, pojoClass);
-        } catch (Exception e) {
-            throw new IOException(e.getMessage());
-        }
-    }
-
-    /**
-     * excel 导入
-     *
-     * @param inputStream 文件输入流
-     * @param titleRows 表格内数据标题行
-     * @param headerRows 表头行
-     * @param pojoClass pojo类型
-     */
-    public static <T> List<T> importExcel(InputStream inputStream, Integer titleRows, Integer headerRows, Class<T> pojoClass) throws IOException {
-        if (inputStream == null) {
-            return null;
-        }
-        ImportParams params = new ImportParams();
-        params.setTitleRows(titleRows);
-        params.setHeadRows(headerRows);
-        params.setSaveUrl("/excel/");
-        params.setNeedSave(true);
-        try {
-            return ExcelImportUtil.importExcel(inputStream, pojoClass, params);
-        } catch (NoSuchElementException e) {
-            throw new IOException("excel文件不能为空");
-        } catch (Exception e) {
-            throw new IOException(e.getMessage());
-        }
-    }
-
-    /**
      * excel转html预览
-     *
-     * @param filePath 文件路径
      */
     public static void excelToHtml(String filePath, HttpServletResponse response) throws Exception {
         ExcelToHtmlParams params = new ExcelToHtmlParams(WorkbookFactory.create(POICacheManager.getFile(filePath)), true);
         response.getOutputStream().write(ExcelXorHtmlUtil.excelToHtml(params).getBytes());
-    }
-
-    /**
-     * word模板导出
-     */
-    public static void WordTemplateExport(Map<String, Object> map, String templatePath, String fileName, HttpServletResponse response) throws Exception {
-        XWPFDocument doc = WordExportUtil.exportWord07(templatePath, map);
-        downLoadWord(fileName, response, doc);
-    }
-
-    /**
-     * word模板导出多页
-     */
-    public static void WordTemplateExportMorePage(List<Map<String, Object>> list, String templatePath, String fileName, HttpServletResponse response) throws Exception {
-        XWPFDocument doc = new ParseWord07().parseWord(templatePath, list);
-        downLoadWord(fileName, response, doc);
-    }
-
-    /**
-     * excel导入（有错误信息）
-     *
-     * @param file 上传的文件
-     * @param pojoClass pojo类型
-     */
-    public static <T> ExcelImportResult<T> importExcelMore(MultipartFile file, Class<T> pojoClass) throws IOException {
-        if (file == null) {
-            return null;
-        }
-        try {
-            return importExcelMore(file.getInputStream(), pojoClass);
-        } catch (Exception e) {
-            throw new IOException(e.getMessage());
-        }
-    }
-
-    /**
-     * excel 导入
-     *
-     * @param inputStream 文件输入流
-     * @param pojoClass pojo类型
-     */
-    private static <T> ExcelImportResult<T> importExcelMore(InputStream inputStream, Class<T> pojoClass) throws IOException {
-        if (inputStream == null) {
-            return null;
-        }
-        ImportParams params = new ImportParams();
-        // 表格内数据标题行
-        params.setTitleRows(1);
-        // 表头行
-        params.setHeadRows(1);
-        params.setSaveUrl("/excel/");
-        params.setNeedSave(true);
-        params.setNeedVerify(true);
-        try {
-            return ExcelImportUtil.importExcelMore(inputStream, pojoClass, params);
-        } catch (NoSuchElementException e) {
-            throw new IOException("excel文件不能为空");
-        } catch (Exception e) {
-            throw new IOException(e.getMessage());
-        }
     }
 }
