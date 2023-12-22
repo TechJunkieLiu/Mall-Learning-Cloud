@@ -3,7 +3,7 @@
 `mall-learning-cloud`是一套微服务商城系统（学习），采用了 Spring Cloud Hoxton & Alibaba、Spring Boot 2.3、Oauth2、MyBatis、Elasticsearch、
 Docker、Kubernetes 等核心技术，同时提供了基于Vue的管理后台方便快速搭建系统。本系统在电商业务的基础集成了注册中心、配置中心、监控中心、网关等系统功能。
 ## 二、系统架构图
-[系统架构图](D:\workspace-learning5\mall-learning-cloud\document\picture\系统架构图.jpg)
+[微服务系统架构图](D:\workspace-learning5\mall-learning-cloud\document\picture\微服务系统架构图.jpg)
 ## 三、项目结构
 ```
 mall-learning-cloud
