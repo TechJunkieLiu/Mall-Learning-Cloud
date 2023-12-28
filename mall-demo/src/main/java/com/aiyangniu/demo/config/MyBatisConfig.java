@@ -12,6 +12,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@MapperScan({"com.aiyangniu.admin.mapper", "com.aiyangniu.gate.mapper"})
+@MapperScan({"com.aiyangniu.admin.mapper", "com.aiyangniu.gate.mapper", "com.aiyangniu.demo.mapper"})
 public class MyBatisConfig {
 }

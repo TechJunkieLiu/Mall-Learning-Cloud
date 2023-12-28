@@ -49,16 +49,61 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
+        <filters>
+            <!-- 根据不同的环境，把对应文件夹里的配置文件打包 -->
+            <filter>src/main/resources/bootstrap-${profiles.active}.yml</filter>
+        </filters>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 打出来的jar包或war包是可执行的（即在文件前面嵌入了额外的脚本，所以执行 jar -xf 等解压命令会失败） -->
+                    <executable>false</executable>
+                    <!-- 解决引用第三方JAR打包部署报错问题，告诉Maven将JAR包复制到BOOT-INF\lib文件下完成打包 -->
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
             </plugin>
         </plugins>
+
     </build>
+
+    <!-- 动态控制本地启动或打包时执行对应的环境配置文件 -->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <!-- 环境标识，需要与配置文件的名称相对应 -->
+                <profiles.active>dev</profiles.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
