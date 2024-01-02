@@ -35,9 +35,9 @@ import java.util.regex.Pattern;
  * @date 2023/08/16
  */
 @SuppressWarnings("unused")
-public class ExcelUtil {
+public class ExcelUtilThree {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelUtilThree.class);
 
     private static final String XLSX = ".xlsx";
     private static final String XLS = ".xls";

@@ -33,21 +33,12 @@ import java.util.NoSuchElementException;
  * @author lzq
  * @date 2023/08/22
  */
-public class ExcelUtil {
-
-    /**
-     * 批量导出
-     */
-    public static void exportExcel(List<Map<String, Object>> list, String fileName, HttpServletResponse response) throws IOException {
-        // 把数据添加到excel表格中
-        Workbook workbook = ExcelExportUtil.exportExcel(list, ExcelType.HSSF);
-        downLoadExcel(fileName, response, workbook);
-    }
+public class ExcelUtilTwo {
 
     /**
      * 批量导出
      *
-     * @param exportParams 导出参数（标题、sheet名称、是否创建表头、表格类型）
+     * @param exportParams 自定义导出参数（title表格内数据标题、sheet名称、是否创建表头、表格类型）
      */
     public static void exportExcel(List<?> list, Class<?> pojoClass, String fileName, ExportParams exportParams, HttpServletResponse response) throws IOException {
         // 把数据添加到excel表格中
@@ -57,9 +48,6 @@ public class ExcelUtil {
 
     /**
      * 批量导出
-     *
-     * @param title 表格内数据标题
-     * @param sheetName sheet名称
      */
     public static void exportExcel(List<?> list, String title, String sheetName, Class<?> pojoClass, String fileName, HttpServletResponse response) throws IOException {
         // 把数据添加到excel表格中
@@ -70,8 +58,6 @@ public class ExcelUtil {
     /**
      * 批量导出
      *
-     * @param title 表格内数据标题
-     * @param sheetName sheet名称
      * @param isCreateHeader 是否创建表头
      */
     public static void exportExcel(List<?> list, String title, String sheetName, Class<?> pojoClass, String fileName, boolean isCreateHeader, HttpServletResponse response) throws IOException {
@@ -79,6 +65,17 @@ public class ExcelUtil {
         exportParams.setCreateHeadRows(isCreateHeader);
         // 把数据添加到excel表格中
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams, pojoClass, list);
+        downLoadExcel(fileName, response, workbook);
+    }
+
+    /**
+     * 批量导出
+     *
+     * @param list List<Map<String, Object>>
+     */
+    public static void exportExcel(List<Map<String, Object>> list, String fileName, HttpServletResponse response) throws IOException {
+        // 把数据添加到excel表格中
+        Workbook workbook = ExcelExportUtil.exportExcel(list, ExcelType.HSSF);
         downLoadExcel(fileName, response, workbook);
     }
 
@@ -114,6 +111,7 @@ public class ExcelUtil {
         try {
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-Type", "application/vnd.ms-excel");
+
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName + ".xlsx", "UTF-8"));
             workbook.write(response.getOutputStream());
         } catch (Exception e) {

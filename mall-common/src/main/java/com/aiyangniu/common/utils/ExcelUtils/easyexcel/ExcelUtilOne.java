@@ -28,9 +28,9 @@ import java.util.List;
  * @author lzq
  * @date 2023/08/17
  */
-public class ExcelUtil {
+public class ExcelUtilOne {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExcelUtilOne.class);
 
     /**
      * 导出数据为excel文件
