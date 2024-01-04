@@ -1,10 +1,12 @@
 package com.aiyangniu.demo.mapper;
 
+import com.aiyangniu.demo.dto.TestUser;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
 /**
- * 测试Mapper
- *
- * @author lzq
- * @date 2023/12/28
+ * @description：
+ * @author：Mr.Liu
+ * @create: 2024-01-03
  */
-public interface TestMapper {
+public interface TestMapper extends BaseMapper<TestUser> {
 }
