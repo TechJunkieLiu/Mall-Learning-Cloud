@@ -8,7 +8,8 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.util.pattern.PathPatternParser;
 
 /**
- * 全局跨域配置（注意：前端从网关进行调用时需要配置）
+ * 返回新的CorsWebFilter（全局跨域）
+ * 注意：前端从网关进行调用时需要配置
  *
  * @author lzq
  * @date 2023/09/22

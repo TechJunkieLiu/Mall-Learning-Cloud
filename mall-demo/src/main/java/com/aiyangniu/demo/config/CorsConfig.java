@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * 重写WebMvcConfigurer(全局跨域)
+ * 重写WebMvcConfigurer（全局跨域）
  *
  * @author lzq
  * @date 2024/01/04

@@ -6,9 +6,9 @@ import com.aiyangniu.demo.dto.TestUser;
 import com.aiyangniu.demo.mapper.TestMapper;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.swagger.annotations.Api;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +17,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @description：
- * @author：Mr.Liu
- * @create: 2024-01-03
+ * 测试前后端联调
+ * 在控制类或具体方法上使用注解 @CrossOrigin（局部跨域）
+ *
+ * @author lzq
+ * @date 2024/01/03
  */
+@CrossOrigin(origins = "*")
+@Api(value = "TestController", tags = "对接前端测试管理类")
 @RestController
 @RequestMapping("/mysql")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
