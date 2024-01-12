@@ -3,7 +3,6 @@ package com.aiyangniu.admin.controller;
 import com.aiyangniu.admin.service.CmsPreferenceAreaService;
 import com.aiyangniu.common.api.CommonResult;
 import com.aiyangniu.entity.model.pojo.cms.CmsPreferenceArea;
-import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import java.util.List;
 @Api(value = "CmsPreferenceAreaController", tags = "商品优选管理")
 @RestController
 @RequestMapping("/preferenceArea")
-@ApiSupport(author = "TechJunkieLiu")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class CmsPreferenceAreaController {
 
