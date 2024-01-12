@@ -19,8 +19,8 @@ public class SwaggerConfig extends BaseSwaggerConfig {
     public SwaggerProperties swaggerProperties() {
         return SwaggerProperties.builder()
                 .apiBasePackage("com.aiyangniu.admin.controller")
-                .title("Mall 后台系统")
-                .description("Mall 后台相关接口文档")
+                .title("Mall-Admin 后台系统")
+                .description("Mall-Admin 后台相关接口文档")
                 .contactName("lzq")
                 .version("1.0")
                 .enableSecurity(true)

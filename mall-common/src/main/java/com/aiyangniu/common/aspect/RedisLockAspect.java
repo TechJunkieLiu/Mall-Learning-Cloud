@@ -11,6 +11,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -23,6 +24,7 @@ import java.util.Map;
  * @author lzq
  * @date 2023/10/24
  */
+@Order(3)
 @Aspect
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -33,7 +35,7 @@ public class RedisLockAspect {
     private static final String LOCK_KEY = "lockKey";
     private static final String TIME_OUT = "timeOut";
     private static final int PROTECT_TIME = 2 << 11;
-    private static final Logger log = LoggerFactory.getLogger(RedisLock.class);
+    private static final Logger log = LoggerFactory.getLogger(RedisLockAspect.class);
 
     private final CommonRedisHelper commonRedisHelper;
 

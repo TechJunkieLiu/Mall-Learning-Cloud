@@ -19,7 +19,7 @@ public class SwaggerConfig extends BaseSwaggerConfig {
     public SwaggerProperties swaggerProperties() {
         return SwaggerProperties.builder()
                 .apiBasePackage("com.aiyangniu.demo.controller")
-                .title("Mall-Demo 系统")
+                .title("Mall-Demo 案例系统")
                 .description("SpringCloud 版本中的一些示例")
                 .contactName("lzq")
                 .version("1.0")

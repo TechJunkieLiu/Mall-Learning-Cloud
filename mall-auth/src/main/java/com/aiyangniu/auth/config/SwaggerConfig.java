@@ -19,8 +19,8 @@ public class SwaggerConfig extends BaseSwaggerConfig {
     public SwaggerProperties swaggerProperties() {
         return SwaggerProperties.builder()
                 .apiBasePackage("com.aiyangniu.auth.controller")
-                .title("Mall 认证中心")
-                .description("Mall 认证中心相关接口文档")
+                .title("Mall-Auth 认证中心")
+                .description("SpringSecurityOAuth2 认证中心相关接口文档")
                 .contactName("lzq")
                 .version("1.0")
                 .enableSecurity(true)
