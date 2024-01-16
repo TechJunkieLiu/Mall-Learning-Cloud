@@ -5,14 +5,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 文件上传返回结果
+ * MinIO对象存储文件上传返回结果
  *
  * @author lzq
  * @date 2023/09/20
  */
 @Data
 @EqualsAndHashCode
-public class MinioUpload {
+public class MinIoUploadResult {
 
     @ApiModelProperty("文件访问URL")
     private String url;

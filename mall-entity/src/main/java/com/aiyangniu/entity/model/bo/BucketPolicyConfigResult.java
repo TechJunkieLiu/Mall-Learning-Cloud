@@ -1,4 +1,4 @@
-package com.aiyangniu.entity.model.dto;
+package com.aiyangniu.entity.model.bo;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 /**
- * Minio Bucket访问策略配置
+ * MinIO对象存储访问策略配置
  *
  * @author lzq
  * @date 2023/09/20
@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode
 @Builder
-public class BucketPolicyConfigDTO {
+public class BucketPolicyConfigResult {
 
     private String version;
     private List<Statement> statement;
