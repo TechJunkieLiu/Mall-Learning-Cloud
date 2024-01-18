@@ -20,13 +20,13 @@ public class OmsOrderQueryParamDTO {
     @ApiModelProperty(value = "收货人姓名/号码")
     private String receiverKeyword;
 
-    @ApiModelProperty(value = "订单状态：0->待付款；1->待发货；2->已发货；3->已完成；4->已关闭；5->无效订单")
+    @ApiModelProperty(value = "订单状态：0-待付款 1-待发货 2-已发货 3-已完成 4-已关闭 5-无效订单")
     private Integer status;
 
-    @ApiModelProperty(value = "订单类型：0->正常订单；1->秒杀订单")
+    @ApiModelProperty(value = "订单类型：0-正常订单 1-秒杀订单")
     private Integer orderType;
 
-    @ApiModelProperty(value = "订单来源：0->PC订单；1->app订单")
+    @ApiModelProperty(value = "订单来源：0-PC订单 1-APP订单")
     private Integer sourceType;
 
     @ApiModelProperty(value = "订单提交时间")
