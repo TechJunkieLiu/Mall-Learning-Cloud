@@ -55,8 +55,8 @@ public class OmsOrderController {
     @ApiOperation("批量关闭订单")
     @PostMapping(value = "/update/close")
     public CommonResult close(
-            @RequestParam(value = "ids", defaultValue = "") @ApiParam(name = "ids", value = "订单编号（多个用,分割）", example = "1,2,3", required = true) String ids,
-            @RequestParam(value = "note", defaultValue = "无", required = false) @ApiParam(name = "note", value = "备注", example = "我是备注") String note
+            @ApiParam(name = "ids", value = "订单编号（多个用,分割）", example = "1,2,3", required = true) @RequestParam(value = "ids", defaultValue = "") String ids,
+            @ApiParam(name = "note", value = "备注", example = "我是备注") @RequestParam(value = "note", defaultValue = "无", required = false) String note
     ) {
         int count = orderService.close(ids, note);
         if (count > 0) {
