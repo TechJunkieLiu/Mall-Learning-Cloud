@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.aiyangniu.admin.mapper.PmsProductCategoryAttributeRelationMapper">
+<mapper namespace="com.aiyangniu.admin.mapper.PmsProductVerifyRecordMapper">
 
     <!--批量新增回写主键支持：useGeneratedKeys参数只针对insert语句生效，当设置为true时，表示若是插入的表自增主键，则容许JDBC支持自动生成主键，并可将自动生成的主键返回-->
     <insert id="insertList" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO pms_product_category_attribute_relation (product_category_id, product_attribute_id) VALUES
+        INSERT INTO pms_product_verify_record (product_id, create_time, verify_man,status, detail) VALUES
         <foreach collection="list" separator="," item="item" index="index">
-            (#{item.productCategoryId, jdbcType=BIGINT},
-            #{item.productAttributeId, jdbcType=BIGINT})
+            (#{item.productId, jdbcType=BIGINT},
+            #{item.createTime, jdbcType=TIMESTAMP},
+            #{item.verifyMan, jdbcType=VARCHAR},
+            #{item.status, jdbcType=INTEGER},
+            #{item.detail, jdbcType=VARCHAR})
         </foreach>
     </insert>
 

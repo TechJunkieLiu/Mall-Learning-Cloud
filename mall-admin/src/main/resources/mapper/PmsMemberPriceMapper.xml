@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiyangniu.admin.mapper.PmsMemberPriceMapper">
+
+    <resultMap id="BaseResultMap" type="com.aiyangniu.entity.model.pojo.pms.PmsMemberPrice">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="product_id" jdbcType="BIGINT" property="productId" />
+        <result column="member_level_id" jdbcType="BIGINT" property="memberLevelId" />
+        <result column="member_price" jdbcType="DECIMAL" property="memberPrice" />
+        <result column="member_level_name" jdbcType="VARCHAR" property="memberLevelName" />
+    </resultMap>
+
+    <!--批量新增回写主键支持：useGeneratedKeys参数只针对insert语句生效，当设置为true时，表示若是插入的表自增主键，则容许JDBC支持自动生成主键，并可将自动生成的主键返回-->
+    <insert id="insertList" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pms_member_price (product_id, member_level_id, member_price,member_level_name) VALUES
+        <foreach collection="list" separator="," item="item" index="index">
+            (#{item.productId, jdbcType=BIGINT},
+            #{item.memberLevelId, jdbcType=BIGINT},
+            #{item.memberPrice, jdbcType=DECIMAL},
+            #{item.memberLevelName, jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+</mapper>
