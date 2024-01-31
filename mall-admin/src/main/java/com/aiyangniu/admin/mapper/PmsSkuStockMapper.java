@@ -10,9 +10,32 @@ import java.util.List;
  * 商品SKU库存管理Mapper
  *
  * @author lzq
- * @date 2024/01/29
+ * @date 2024/01/31
  */
 public interface PmsSkuStockMapper extends BaseMapper<PmsSkuStock> {
+
+    /**
+     * 获取下单商品的所有库存信息
+     *
+     * @param productSkuId 下单商品的SKU ID
+     * @return 库存信息
+     */
+    PmsSkuStock selectBySkuId(Long productSkuId);
+
+    /**
+     * 锁定下单商品的所有库存
+     *
+     * @param skuStock 库存信息
+     */
+    void updatePmsSkuStock(PmsSkuStock skuStock);
+
+    /**
+     * 批量插入或替换操作
+     *
+     * @param skuStockList 商品库存列表
+     * @return 更新个数
+     */
+    int replaceList(@Param("list") List<PmsSkuStock> skuStockList);
 
     /**
      * 批量创建

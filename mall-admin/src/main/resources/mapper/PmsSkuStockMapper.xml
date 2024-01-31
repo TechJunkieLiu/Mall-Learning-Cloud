@@ -20,10 +20,69 @@
         id, product_id, sku_code, price, stock, low_stock, pic, sale, promotion_price, lock_stock, sp_data
     </sql>
 
+    <select id="selectBySkuId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from pms_sku_stock
+        where id = #{id, jdbcType=BIGINT}
+    </select>
+
+    <update id="updatePmsSkuStock" parameterType="com.aiyangniu.entity.model.pojo.pms.PmsSkuStock">
+        update pms_sku_stock
+        <set>
+            <if test="productId != null">
+                product_id = #{productId, jdbcType=BIGINT},
+            </if>
+            <if test="skuCode != null">
+                sku_code = #{skuCode, jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price, jdbcType=DECIMAL},
+            </if>
+            <if test="stock != null">
+                stock = #{stock, jdbcType=INTEGER},
+            </if>
+            <if test="lowStock != null">
+                low_stock = #{lowStock, jdbcType=INTEGER},
+            </if>
+            <if test="pic != null">
+                pic = #{pic, jdbcType=VARCHAR},
+            </if>
+            <if test="sale != null">
+                sale = #{sale, jdbcType=INTEGER},
+            </if>
+            <if test="promotionPrice != null">
+                promotion_price = #{promotionPrice, jdbcType=DECIMAL},
+            </if>
+            <if test="lockStock != null">
+                lock_stock = #{lockStock, jdbcType=INTEGER},
+            </if>
+            <if test="spData != null">
+                sp_data = #{spData, jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id, jdbcType=BIGINT}
+    </update>
+
     <insert id="insertList">
         INSERT INTO pms_sku_stock (product_id, sku_code, price, stock, low_stock, pic, sale, sp_data) VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.productId, jdbcType=BIGINT},
+            #{item.skuCode, jdbcType=VARCHAR},
+            #{item.price, jdbcType=DECIMAL},
+            #{item.stock, jdbcType=INTEGER},
+            #{item.lowStock, jdbcType=INTEGER},
+            #{item.pic, jdbcType=VARCHAR},
+            #{item.sale, jdbcType=INTEGER},
+            #{item.spData, jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <insert id="replaceList">
+        REPLACE INTO pms_sku_stock (id, product_id, sku_code, price, stock, low_stock, pic, sale, sp_data) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id, jdbcType=BIGINT},
+            #{item.productId, jdbcType=BIGINT},
             #{item.skuCode, jdbcType=VARCHAR},
             #{item.price, jdbcType=DECIMAL},
             #{item.stock, jdbcType=INTEGER},
