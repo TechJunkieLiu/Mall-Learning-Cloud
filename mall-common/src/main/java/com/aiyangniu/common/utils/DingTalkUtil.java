@@ -2,9 +2,9 @@ package com.aiyangniu.common.utils;
 
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 /**
  * 钉钉消息发送工具类
@@ -31,44 +32,39 @@ public class DingTalkUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(DingTalkUtil.class);
 
     /**
-     * 发送钉钉群消息
+     * 发送钉钉群消息（text文本）
      */
     public static void sendDingGroupMsg(String accessToken, String secret, String content) {
         JSONObject text = new JSONObject();
         text.put("content", content);
-
         JSONObject textMsg = new JSONObject();
         textMsg.put("msgtype", "text");
         textMsg.put("text", text);
-
         dealDingMsgSendNew(accessToken, secret, textMsg.toJSONString());
     }
 
     /**
-     * 发送钉钉群消息（可以艾特人）
+     * 发送钉钉群消息（text文本-可以艾特人）
      *
      * @param accessToken 群机器人accessToken
      * @param content 发送内容
-     * @param atPhone 艾特人电话
+     * @param atMobiles 艾特人电话
      */
-    public static void sendDingGroupMsgPhone(String accessToken, String secret, String content, String atPhone) {
+    public static void sendDingGroupMsgPhone(String accessToken, String secret, String content, String atMobiles) {
         JSONObject text = new JSONObject();
         text.put("content", content);
-
         JSONObject at = new JSONObject();
-        at.put("atMobiles", atPhone);
+        at.put("atMobiles", Arrays.asList(atMobiles.split(",")));
         at.put("isAtAll", false);
-
         JSONObject textMsg = new JSONObject();
         textMsg.put("msgtype", "text");
         textMsg.put("text", text);
         textMsg.put("at", at);
-
         dealDingMsgSendNew(accessToken, secret, textMsg.toJSONString());
     }
 
     /**
-     * 发送钉钉群消息（link类型）
+     * 发送钉钉群消息（link链接）
      *
      * @param accessToken 群机器人accessToken
      * @param title 消息标题
@@ -77,17 +73,14 @@ public class DingTalkUtil {
      * @param messageUrl 点击消息跳转的URL
      */
     public static void sendDingLinkGroupMsg(String accessToken, String secret, String title, String text, String picUrl, String messageUrl) {
-        LOGGER.info("【发送钉钉群消息】正在发送link类型的钉钉消息......");
         JSONObject link = new JSONObject();
         link.put("text", text);
         link.put("title", title);
         link.put("picUrl", picUrl);
         link.put("messageUrl", messageUrl);
-
         JSONObject textMsg = new JSONObject();
         textMsg.put("msgtype", "link");
         textMsg.put("link", link);
-
         dealDingMsgSendNew(accessToken, secret, textMsg.toJSONString());
     }
 
@@ -101,82 +94,89 @@ public class DingTalkUtil {
      * @param atMobiles 艾特人电话
      */
     public static void sendDingMarkdownGroupMsg(String accessToken, String secret, String title, String text, String atMobiles) {
-        LOGGER.info("【发送钉钉群消息】正在发送markdown类型的钉钉消息......");
         JSONObject markdown = new JSONObject();
         markdown.put("title", title);
         markdown.put("text", text);
-
         JSONObject at = new JSONObject();
-        at.put("atMobiles", atMobiles);
+        at.put("atMobiles", Arrays.asList(atMobiles.split(",")));
         at.put("isAtAll", false);
-
         JSONObject textMsg = new JSONObject();
         textMsg.put("msgtype", "markdown");
         textMsg.put("markdown", markdown);
         textMsg.put("at", at);
-
         dealDingMsgSendNew(accessToken, secret, textMsg.toJSONString());
     }
 
     /**
-     * 发送钉钉群消息（FeedCard类型）
+     * 发送钉钉群消息（feedCard类型）
      */
-    public static void sendDingFeedCardGroupMsg(String accessToken, String secret, String title, String text, String singleTitle, String singleURL) {
-        String textMsg = "{\"feedCard\":{\"links\":[{\"title\":\""+ title +"\",\"text\":\""+ text +"\",\"singleTitle\":\""+ singleTitle +"\",\"singleURL\":\""+ singleURL +"\"}," +
-                "{\"title\":\""+ title +"\",\"text\":\""+ text +"\",\"singleTitle\":\""+ singleTitle +"\",\"singleURL\":\""+ singleURL +"\"}]},\"msgtype\":\"feedCard\"}";
-        dealDingMsgSendNew(accessToken, secret, StringEscapeUtils.unescapeJava(textMsg));
+    public static void sendDingFeedCardGroupMsg(String accessToken, String secret, String title, String messageUrl, String picUrl) {
+        JSONObject link1 = new JSONObject();
+        link1.put("title", title);
+        link1.put("messageURL", messageUrl);
+        link1.put("picURL", picUrl);
+        JSONObject link2 = new JSONObject();
+        link2.put("title", title);
+        link2.put("messageURL", messageUrl);
+        link2.put("picURL", picUrl);
+        JSONArray links = new JSONArray();
+        links.add(link1);
+        links.add(link2);
+        JSONObject feedCard = new JSONObject();
+        feedCard.put("links", links);
+        JSONObject textMsg = new JSONObject();
+        textMsg.put("msgtype", "feedCard");
+        textMsg.put("feedCard", feedCard);
+        dealDingMsgSendNew(accessToken, secret, textMsg.toJSONString());
     }
 
     /**
      * 整体跳转ActionCard类型
      */
     public static void sendDingActionCardGroupMsg(String accessToken, String secret, String title, String text, String singleTitle, String singleURL) {
-        String textMsg = "{\n" +
-                "    \"actionCard\": {\n" +
-                "        \"title\": \""+title+"\", \n" +
-                "        \"text\": \"![screenshot](https://mmbiz.qpic.cn/mmbiz_jpg/jyPD8edcUjEwQ1Tdotpq94VE4G1wIMAxQyI2Oe7RaDRT0iaBRD2KdOL0iaL56jBWQX5Fzq3S7R66pyuEIZW83Ulw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)"+text+"\", \n" +
-                "        \"hideAvatar\": \"0\", \n" +
-                "        \"btnOrientation\": \"0\", \n" +
-                "        \"singleTitle\" : \""+singleTitle+"\",\n" +
-                "        \"singleURL\" : \""+singleURL+"\"\n" +
-                "    }, \n" +
-                "    \"msgtype\": \"actionCard\"\n" +
-                "}";
-        dealDingMsgSendNew(accessToken, secret, StringEscapeUtils.unescapeJava(textMsg));
+        JSONObject actionCard = new JSONObject();
+        actionCard.put("title", title);
+        actionCard.put("text", text);
+        actionCard.put("hideAvatar", "0");
+        actionCard.put("btnOrientation", "0");
+        actionCard.put("singleTitle", singleTitle);
+        actionCard.put("singleURL", singleURL);
+        JSONObject textMsg = new JSONObject();
+        textMsg.put("msgtype", "actionCard");
+        textMsg.put("actionCard", actionCard);
+        dealDingMsgSendNew(accessToken, secret, textMsg.toJSONString());
     }
 
     /**
      * 独立跳转ActionCard类型
      */
-    public static void sendDingActionCardGroupMsg2(String accessToken, String secret, String title, String text, String singleTitle, String singleURL) {
-        String textMsg = "{\n" +
-                "    \"actionCard\": {\n" +
-                "        \"title\": \"乔布斯 20 年前想打造一间苹果咖啡厅，而它正是 Apple Store 的前身\", \n" +
-                "        \"text\": \"![screenshot](@lADOpwk3K80C0M0FoA) \n" +
-                " ### 乔布斯 20 年前想打造的苹果咖啡厅 \n" +
-                " Apple Store 的设计正从原来满满的科技感走向生活化，而其生活化的走向其实可以追溯到 20 年前苹果一个建立咖啡馆的计划\", \n" +
-                "        \"hideAvatar\": \"0\", \n" +
-                "        \"btnOrientation\": \"0\", \n" +
-                "        \"btns\": [\n" +
-                "            {\n" +
-                "                \"title\": \"内容不错\", \n" +
-                "                \"actionURL\": \"https://www.dingtalk.com/\"\n" +
-                "            }, \n" +
-                "            {\n" +
-                "                \"title\": \"不感兴趣\", \n" +
-                "                \"actionURL\": \"https://www.dingtalk.com/\"\n" +
-                "            }\n" +
-                "        ]\n" +
-                "    }, \n" +
-                "    \"msgtype\": \"actionCard\"\n" +
-                "}\n";
-        dealDingMsgSendNew(accessToken, secret, StringEscapeUtils.unescapeJava(textMsg));
+    public static void sendDingActionCardGroupMsg2(String accessToken, String secret, String title, String text, String singleTitle1, String singleTitle2, String singleUrl1, String singleUrl2) {
+        JSONObject btns1 = new JSONObject();
+        btns1.put("title", singleTitle1);
+        btns1.put("actionURL", singleUrl1);
+        JSONObject btns2 = new JSONObject();
+        btns2.put("title", singleTitle2);
+        btns2.put("actionURL", singleUrl2);
+        JSONArray btns = new JSONArray();
+        btns.add(btns1);
+        btns.add(btns2);
+        JSONObject actionCard = new JSONObject();
+        actionCard.put("title", title);
+        actionCard.put("text", text);
+        actionCard.put("hideAvatar", "0");
+        actionCard.put("btnOrientation", "0");
+        actionCard.put("btns", btns);
+        JSONObject textMsg = new JSONObject();
+        textMsg.put("msgtype", "actionCard");
+        textMsg.put("actionCard", actionCard);
+        dealDingMsgSendNew(accessToken, secret, textMsg.toJSONString());
     }
 
     /**
      * 调用钉钉官方接口发送钉钉消息（新版本，需要配置安全设置）
      */
     private static void dealDingMsgSendNew(String accessToken, String secret, String textMsg) {
+        LOGGER.info("【发送钉钉群消息】正在发送钉钉群消息......");
         Long timestamp = System.currentTimeMillis();
         String sign = getSign(secret, timestamp);
         String url = "https://oapi.dingtalk.com/robot/send?access_token=" + accessToken + "&timestamp=" + timestamp + "&sign=" + sign;

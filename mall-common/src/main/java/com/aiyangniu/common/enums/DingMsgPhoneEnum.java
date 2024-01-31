@@ -11,9 +11,9 @@ import lombok.Getter;
 @Getter
 public enum DingMsgPhoneEnum {
 
-    GENERAL_PURPOSE("13853740741,15695357257,15047968011", "通用（包含技术、产品、领导等）"),
-    DEVELOPER_PHONE("13853740741,13171077730", "技术人员"),
-    PRODUCT_PERSONNEL_PHONE("18867535357", "产品人员"),
+    GENERAL_PURPOSE("138****0741,156****7257,150****8012", "通用（包含技术、产品、领导等）"),
+    PRODUCT_PERSONNEL_PHONE("188****5357,155****9685", "产品人员"),
+    DEVELOPER_PHONE("13171077730", "技术人员"),
     DATA_ANALYST_PHONE("", "数据分析人员");
 
     private String phone;
