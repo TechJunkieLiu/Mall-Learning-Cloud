@@ -12,15 +12,17 @@ import java.util.List;
  * 首页内容管理Mapper
  *
  * @author lzq
- * @date 2023/09/20
+ * @date 2024/01/31
  */
 public interface HomeMapper{
 
     /**
      * 获取推荐品牌
+     * LIMIT #{offset}, #{limit}         ==   LIMIT (pageNum-1) * pageSize, pageSize
+     * LIMIT #{limit} offset #{offset}   ==   LIMIT pageSize offset (pageNum-1) * pageSize
      *
-     * @param offset 当前页（pageSize * (pageNum -1)）
-     * @param limit 页条数（pageSize）
+     * @param offset 起始页
+     * @param limit 页条数
      * @return 推荐品牌列表
      */
     List<PmsBrand> getRecommendBrandList(@Param("offset") Integer offset, @Param("limit") Integer limit);
@@ -36,27 +38,33 @@ public interface HomeMapper{
 
     /**
      * 获取新品推荐
+     * LIMIT #{offset}, #{limit}         ==   LIMIT (pageNum-1) * pageSize, pageSize
+     * LIMIT #{limit} offset #{offset}   ==   LIMIT pageSize offset (pageNum-1) * pageSize
      *
-     * @param offset 当前页（pageSize * (pageNum -1)）
-     * @param limit 页条数（pageSize）
+     * @param offset 起始页
+     * @param limit 页条数
      * @return 新品推荐列表
      */
     List<PmsProduct> getNewProductList(@Param("offset") Integer offset, @Param("limit") Integer limit);
 
     /**
      * 获取人气推荐
+     * LIMIT #{offset}, #{limit}         ==   LIMIT (pageNum-1) * pageSize, pageSize
+     * LIMIT #{limit} offset #{offset}   ==   LIMIT pageSize offset (pageNum-1) * pageSize
      *
-     * @param offset 当前页（pageSize * (pageNum -1)）
-     * @param limit 页条数（pageSize）
+     * @param offset 起始页
+     * @param limit 页条数
      * @return 人气推荐列表
      */
     List<PmsProduct> getHotProductList(@Param("offset") Integer offset, @Param("limit") Integer limit);
 
     /**
      * 获取推荐专题
+     * LIMIT #{offset}, #{limit}         ==   LIMIT (pageNum-1) * pageSize, pageSize
+     * LIMIT #{limit} offset #{offset}   ==   LIMIT pageSize offset (pageNum-1) * pageSize
      *
-     * @param offset 当前页（pageSize * (pageNum -1)）
-     * @param limit 页条数（pageSize）
+     * @param offset 起始页
+     * @param limit 页条数
      * @return 推荐专题列表
      */
     List<CmsSubject> getRecommendSubjectList(@Param("offset") Integer offset, @Param("limit") Integer limit);

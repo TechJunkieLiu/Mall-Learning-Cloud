@@ -43,7 +43,9 @@ management: #开启SpringBoot Admin的监控
   endpoint:
     health:
       show-details: always
-
+mongo:
+  insert:
+    sqlEnable: false #用于控制是否通过数据库数据来插入mongo
 # 自定义redis key
 redis:
   database: mall
@@ -52,9 +54,8 @@ redis:
     orderId: 'oms:orderId'
     member: 'ums:member'
   expire:
-    authCode: 90 # 验证码超期时间
-    common: 86400 # 24小时
-
+    authCode: 90 #验证码超期时间
+    common: 86400 #24小时
 # 消息队列定义
 rabbitmq:
   queue:
