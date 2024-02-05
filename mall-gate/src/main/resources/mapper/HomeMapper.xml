@@ -45,7 +45,7 @@
             AND p.publish_status = 1
         ORDER BY
             hp.sort DESC
-        LIMIT #{offset}, #{limit};
+        LIMIT #{offset}, #{limit}
     </select>
 
     <select id="getHotProductList" resultMap="com.aiyangniu.gate.mapper.PmsProductMapper.BaseResultMap">
@@ -58,7 +58,7 @@
             AND p.publish_status = 1
         ORDER BY
             hp.sort DESC
-        LIMIT #{offset}, #{limit};
+        LIMIT #{offset}, #{limit}
     </select>
 
     <select id="getRecommendSubjectList" resultMap="com.aiyangniu.gate.mapper.CmsSubjectMapper.BaseResultMap">
@@ -71,7 +71,7 @@
             AND s.show_status = 1
         ORDER BY
             hs.sort DESC
-        LIMIT #{offset}, #{limit};
+        LIMIT #{offset}, #{limit}
     </select>
 
 </mapper>
