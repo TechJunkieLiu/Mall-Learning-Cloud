@@ -11,7 +11,7 @@ import java.util.List;
  * 前台购物车商品管理Mapper
  *
  * @author lzq
- * @date 2023/09/20
+ * @date 2024/02/06
  */
 public interface GateProductMapper {
 
