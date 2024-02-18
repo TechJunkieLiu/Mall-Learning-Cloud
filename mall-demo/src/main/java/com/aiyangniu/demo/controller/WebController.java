@@ -28,7 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/mysql")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class TestController {
+public class WebController {
 
     @Getter
     @AllArgsConstructor

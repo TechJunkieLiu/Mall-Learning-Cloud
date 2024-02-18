@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RefreshScope
 @RestController
 @RequestMapping("/nacos")
-public class NacosTestController {
+public class NacosController {
 
     @Value("${spring.datasource.url}")
     private String url;
