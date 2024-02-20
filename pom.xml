@@ -60,6 +60,7 @@
         <ik-analyzer.version>8.4.0</ik-analyzer.version>
         <thumbnailator.version>0.4.19</thumbnailator.version>
         <fastjson.version>2.0.32</fastjson.version>
+        <ehcache.version>3.8.1</ehcache.version>
         <mall-common.version>1.0-SNAPSHOT</mall-common.version>
         <mall-entity.version>1.0-SNAPSHOT</mall-entity.version>
     </properties>
@@ -265,6 +266,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
+            </dependency>
+            <!-- Ehcache缓存 -->
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${ehcache.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

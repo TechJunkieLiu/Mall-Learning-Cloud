@@ -15,4 +15,8 @@
         <result column="big_pic" jdbcType="VARCHAR" property="bigPic" />
     </resultMap>
 
+    <select id="getBrandById" resultType="com.aiyangniu.entity.model.pojo.pms.PmsBrand">
+        SELECT * FROM pms_brand WHERE id = #{id}
+    </select>
+
 </mapper>

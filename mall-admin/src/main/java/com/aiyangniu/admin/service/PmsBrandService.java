@@ -15,6 +15,14 @@ import java.util.List;
 public interface PmsBrandService {
 
     /**
+     * 获取全部品牌列表（测试Ehcache缓存）
+     *
+     * @param name 品牌名称
+     * @return 品牌列表
+     */
+    List<PmsBrand> cache(String name);
+
+    /**
      * 获取所有品牌
      *
      * @return 品牌列表

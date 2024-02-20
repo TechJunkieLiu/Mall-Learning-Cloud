@@ -12,6 +12,8 @@ import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +25,18 @@ import java.util.List;
  * @date 2024/01/26
  */
 @Service
+@CacheConfig(cacheNames = "cacheOld")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class PmsBrandServiceImpl implements PmsBrandService {
 
     private final PmsBrandMapper pmsBrandMapper;
     private final PmsProductMapper pmsProductMapper;
+
+    @Override
+    @Cacheable(cacheNames = "cacheNew", condition = "T(com.aiyangniu.admin.service.impl.PmsBrandNameCache).contain(#name)")
+    public List<PmsBrand> cache(String name) {
+        return pmsBrandMapper.selectList(new LambdaQueryWrapper<PmsBrand>().eq(StrUtil.isNotEmpty(name), PmsBrand::getName, name));
+    }
 
     @Override
     public List<PmsBrand> listAllBrand() {
@@ -78,8 +87,9 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     }
 
     @Override
+    @Cacheable(cacheNames = "springCacheNew", keyGenerator = "classKeyGenerator")
     public PmsBrand getBrand(Long id) {
-        return pmsBrandMapper.selectById(id);
+        return pmsBrandMapper.getBrandById(id);
     }
 
     @Override

@@ -28,6 +28,12 @@ public class PmsBrandController {
 
     private final PmsBrandService pmsBrandService;
 
+    @ApiOperation(value = "获取全部品牌列表(测试Ehcache缓存)")
+    @GetMapping(value = "/cache")
+    public CommonResult<List<PmsBrand>> cache(String name) {
+        return CommonResult.success(pmsBrandService.cache(name));
+    }
+
     @ApiOperation(value = "获取全部品牌列表")
     @GetMapping(value = "/listAll")
     public CommonResult<List<PmsBrand>> getList() {
@@ -83,7 +89,7 @@ public class PmsBrandController {
         return CommonResult.success(CommonPage.restPage(brandList));
     }
 
-    @ApiOperation(value = "根据编号查询品牌信息")
+    @ApiOperation(value = "根据编号查询品牌信息(测试springCache缓存)")
     @GetMapping(value = "/{id}")
     public CommonResult<PmsBrand> getItem(@PathVariable("id") Long id) {
         return CommonResult.success(pmsBrandService.getBrand(id));
