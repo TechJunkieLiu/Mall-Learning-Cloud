@@ -57,8 +57,8 @@
         <collection property="memberPriceList" columnPrefix="member_" resultMap="com.aiyangniu.admin.mapper.PmsMemberPriceMapper.BaseResultMap" />
         <collection property="skuStockList" columnPrefix="sku_" resultMap="com.aiyangniu.admin.mapper.PmsSkuStockMapper.BaseResultMap" />
         <collection property="productAttributeValueList" columnPrefix="attribute_" resultMap="com.aiyangniu.admin.mapper.PmsProductAttributeValueMapper.BaseResultMap" />
-        <collection property="subjectProductRelationList" column="{productId=id}" select="selectSubjectProductRelationByProductId"/>
-        <collection property="preferenceAreaProductRelationList" column="{productId=id}" select="selectPreferenceAreaProductRelationByProductId" />
+        <collection property="subjectProductRelationList" column="{productId=id}" select="com.aiyangniu.admin.mapper.PmsProductMapper.selectSubjectProductRelationByProductId"/>
+        <collection property="preferenceAreaProductRelationList" column="{productId=id}" select="com.aiyangniu.admin.mapper.PmsProductMapper.selectPreferenceAreaProductRelationByProductId" />
     </resultMap>
 
     <select id="getUpdateInfo" resultMap="updateInfoMap">
