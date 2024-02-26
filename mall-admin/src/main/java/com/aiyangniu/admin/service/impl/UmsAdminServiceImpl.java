@@ -17,16 +17,19 @@ import com.aiyangniu.common.constant.AuthConstant;
 import com.aiyangniu.common.domain.UserDTO;
 import com.aiyangniu.common.exception.Asserts;
 import com.aiyangniu.entity.model.dto.UmsAdminDTO;
+import com.aiyangniu.entity.model.dto.UpdateAdminPasswordDTO;
 import com.aiyangniu.entity.model.pojo.ums.UmsAdmin;
 import com.aiyangniu.entity.model.pojo.ums.UmsAdminLoginLog;
 import com.aiyangniu.entity.model.pojo.ums.UmsAdminRoleRelation;
 import com.aiyangniu.entity.model.pojo.ums.UmsRole;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -38,7 +41,7 @@ import java.util.stream.Collectors;
  * 后台用户实现类
  *
  * @author lzq
- * @date 2023/09/21
+ * @date 2024/02/20
  */
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -106,7 +109,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     public int updateRole(Long adminId, List<Long> roleIds) {
         int count = roleIds == null ? 0 : roleIds.size();
         // 先删除原来的关系
-        umsAdminRoleRelationMapper.deleteById(adminId);
+        umsAdminRoleRelationMapper.delete(new LambdaQueryWrapper<UmsAdminRoleRelation>().eq(UmsAdminRoleRelation::getAdminId, adminId));
         // 建立新关系
         if (!CollectionUtils.isEmpty(roleIds)) {
             List<UmsAdminRoleRelation> list = new ArrayList<>();
@@ -150,6 +153,63 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Override
     public List<UmsRole> getRoleList(Long adminId) {
         return umsAdminRoleRelationMapper.getRoleList(adminId);
+    }
+
+    @Override
+    public List<UmsAdmin> list(String keyword, Integer pageSize, Integer pageNum) {
+        PageHelper.startPage(pageNum, pageSize);
+        return umsAdminMapper.selectList(new LambdaQueryWrapper<UmsAdmin>().like(!StringUtils.isEmpty(keyword), UmsAdmin::getUsername, keyword).or().like(!StringUtils.isEmpty(keyword), UmsAdmin::getNickName, keyword));
+    }
+
+    @Override
+    public UmsAdmin getItem(Long id) {
+        return umsAdminMapper.selectById(id);
+    }
+
+    @Override
+    public int update(Long id, UmsAdmin admin) {
+        admin.setId(id);
+        UmsAdmin rawAdmin = umsAdminMapper.selectById(id);
+        if(rawAdmin.getPassword().equals(admin.getPassword())){
+            // 与原加密密码相同的不需要修改
+            admin.setPassword(null);
+        }else{
+            // 与原加密密码不同的需要加密修改
+            if(StrUtil.isEmpty(admin.getPassword())){
+                admin.setPassword(null);
+            }else{
+                admin.setPassword(BCrypt.hashpw(admin.getPassword()));
+            }
+        }
+        int count = umsAdminMapper.updateById(admin);
+        umsAdminCacheService.delAdmin(id);
+        return count;
+    }
+
+    @Override
+    public int updatePassword(UpdateAdminPasswordDTO dto) {
+        if(StrUtil.isEmpty(dto.getUsername()) || StrUtil.isEmpty(dto.getOldPassword()) || StrUtil.isEmpty(dto.getNewPassword())){
+            return -1;
+        }
+        List<UmsAdmin> umsAdminList = umsAdminMapper.selectList(new LambdaQueryWrapper<UmsAdmin>().eq(UmsAdmin::getUsername, dto.getUsername()));
+        if(CollUtil.isEmpty(umsAdminList)){
+            return -2;
+        }
+        UmsAdmin umsAdmin = umsAdminList.get(0);
+        if(!BCrypt.checkpw(dto.getOldPassword(), umsAdmin.getPassword())){
+            return -3;
+        }
+        umsAdmin.setPassword(BCrypt.hashpw(dto.getNewPassword()));
+        umsAdminMapper.updateById(umsAdmin);
+        umsAdminCacheService.delAdmin(umsAdmin.getId());
+        return 1;
+    }
+
+    @Override
+    public int delete(Long id) {
+        int count = umsAdminMapper.deleteById(id);
+        umsAdminCacheService.delAdmin(id);
+        return count;
     }
 
     /**

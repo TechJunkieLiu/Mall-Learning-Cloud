@@ -3,10 +3,12 @@ package com.aiyangniu.admin.controller;
 import cn.hutool.core.collection.CollUtil;
 import com.aiyangniu.admin.service.UmsAdminService;
 import com.aiyangniu.admin.service.UmsRoleService;
+import com.aiyangniu.common.api.CommonPage;
 import com.aiyangniu.common.api.CommonResult;
 import com.aiyangniu.common.domain.UserDTO;
 import com.aiyangniu.entity.model.dto.UmsAdminDTO;
 import com.aiyangniu.entity.model.dto.UmsAdminLoginDTO;
+import com.aiyangniu.entity.model.dto.UpdateAdminPasswordDTO;
 import com.aiyangniu.entity.model.pojo.ums.UmsAdmin;
 import com.aiyangniu.entity.model.pojo.ums.UmsRole;
 import io.swagger.annotations.Api;
@@ -74,6 +76,73 @@ public class UmsAdminController {
         return CommonResult.success(null);
     }
 
+    @ApiOperation("根据用户名或姓名分页获取用户列表")
+    @GetMapping(value = "/list")
+    public CommonResult<CommonPage<UmsAdmin>> list(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize
+    ) {
+        List<UmsAdmin> adminList = umsAdminService.list(keyword, pageNum, pageSize);
+        return CommonResult.success(CommonPage.restPage(adminList));
+    }
+
+    @ApiOperation("获取指定用户信息")
+    @GetMapping(value = "/{id}")
+    public CommonResult<UmsAdmin> getItem(@PathVariable Long id) {
+        UmsAdmin admin = umsAdminService.getItem(id);
+        return CommonResult.success(admin);
+    }
+
+    @ApiOperation("修改指定用户信息")
+    @PostMapping(value = "/update/{id}")
+    public CommonResult update(@PathVariable Long id, @RequestBody UmsAdmin admin) {
+        int count = umsAdminService.update(id, admin);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("修改指定用户密码")
+    @PostMapping(value = "/updatePassword")
+    public CommonResult updatePassword(@Validated @RequestBody UpdateAdminPasswordDTO dto) {
+        int status = umsAdminService.updatePassword(dto);
+        if (status > 0) {
+            return CommonResult.success(status);
+        } else if (status == -1) {
+            return CommonResult.failed("提交参数不合法");
+        } else if (status == -2) {
+            return CommonResult.failed("找不到该用户");
+        } else if (status == -3) {
+            return CommonResult.failed("旧密码错误");
+        } else {
+            return CommonResult.failed();
+        }
+    }
+
+    @ApiOperation("删除指定用户信息")
+    @PostMapping(value = "/delete/{id}")
+    public CommonResult delete(@PathVariable Long id) {
+        int count = umsAdminService.delete(id);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("修改帐号状态")
+    @PostMapping(value = "/updateStatus/{id}")
+    public CommonResult updateStatus(@PathVariable Long id, @RequestParam(value = "status") Integer status) {
+        UmsAdmin umsAdmin = new UmsAdmin();
+        umsAdmin.setStatus(status);
+        int count = umsAdminService.update(id, umsAdmin);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
+
     @ApiOperation("给用户分配角色")
     @PostMapping(value = "/role/update")
     public CommonResult updateRole(@RequestParam("adminId") Long adminId, @RequestParam("roleIds") List<Long> roleIds) {
@@ -96,5 +165,4 @@ public class UmsAdminController {
     public UserDTO loadUserByUsername(@RequestParam String username) {
         return umsAdminService.loadUserByUsername(username);
     }
-
 }
