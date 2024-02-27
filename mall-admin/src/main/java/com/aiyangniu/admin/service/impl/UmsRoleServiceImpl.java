@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import com.aiyangniu.admin.mapper.UmsRoleMapper;
 import com.aiyangniu.admin.mapper.UmsRoleMenuRelationMapper;
 import com.aiyangniu.admin.mapper.UmsRoleResourceRelationMapper;
-import com.aiyangniu.admin.service.UmsAdminCacheService;
 import com.aiyangniu.admin.service.UmsResourceService;
 import com.aiyangniu.admin.service.UmsRoleService;
 import com.aiyangniu.entity.model.pojo.ums.*;
@@ -30,7 +29,6 @@ public class UmsRoleServiceImpl implements UmsRoleService {
 
     private final UmsRoleMapper umsRoleMapper;
     private final UmsResourceService resourceService;
-    private final UmsAdminCacheService umsAdminCacheService;
     private final UmsRoleMenuRelationMapper umsRoleMenuRelationMapper;
     private final UmsRoleResourceRelationMapper umsRoleResourceRelationMapper;
 
