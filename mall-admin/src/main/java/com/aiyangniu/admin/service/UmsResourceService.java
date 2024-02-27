@@ -9,7 +9,7 @@ import java.util.Map;
  * 后台资源管理接口
  *
  * @author lzq
- * @date 2023/10/10
+ * @date 2024/02/27
  */
 public interface UmsResourceService {
 
