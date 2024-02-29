@@ -17,14 +17,14 @@ import java.io.Serializable;
 public class HuifuTransOrdLog2 implements Serializable {
 
     @ApiModelProperty("渠道商号")
-    @CsvBindByName(column = "渠道商号")
+    @CsvBindByName(column = "=\"渠道商号\"")
     private String sysId;
 
     @ApiModelProperty("商户号")
-    @CsvBindByName(column = "商户号")
+    @CsvBindByName(column = "=\"商户号\"")
     private String huifuId;
 
     @ApiModelProperty("商户名称")
-    @CsvBindByName(column = "商户名称")
+    @CsvBindByName(column = "=\"商户名称\"")
     private String regName;
 }
