@@ -6,9 +6,7 @@ import com.aiyangniu.demo.dto.HuifuTransOrdLog2;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +22,6 @@ import java.util.List;
 @Api(value = "TestController", tags = "解析CSV文件测试类")
 @RestController
 @RequestMapping("/csv")
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class CsvController {
 
     @ApiOperation(value = "解析CSV文件")

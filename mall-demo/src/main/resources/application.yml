@@ -11,6 +11,25 @@ spring:
     database: 0
     password:
     timeout: 3000
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  freemarker:  #模板引擎
+    cache: false  #模板缓存
+    charset: UTF-8  #模板编码
+    template-loader-path: classpath:/templates  #设置ftl文件根路径
+    request-context-attribute: request  #request-context为request
+    suffix: .ftl  #文件后缀
+    prefix: /view  #文件前缀
+file:
+  download-path: D:\\myFile\\download\\
+  upload-path: D:\\myFile\\upload\\
+  compress-path: D:\\myFile\\compress\\
+  decompress-path: D:\\myFile\\decompress\\
+  file-type-array: .png,.jpg,.jpeg,.txt,.zip,.rar,.pdf,.xml,xls
+  max-file-size: 8192
+
 mybatis:
   mapper-locations:
     - classpath:mapper/*.xml

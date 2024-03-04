@@ -5,11 +5,9 @@ import com.aiyangniu.common.enums.DingTokenEnum;
 import com.aiyangniu.common.utils.DingTalkUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @Api(value = "DingTalkController", tags = "钉钉消息发送测试类")
 @RestController
 @RequestMapping("/ding")
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class DingTalkController {
 
     @Value("${spring.profiles.active}")
