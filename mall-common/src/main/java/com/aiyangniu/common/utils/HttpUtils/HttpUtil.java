@@ -118,7 +118,7 @@ public class HttpUtil {
     /**
      * HTTP Post（用于请求json格式的参数，StringEntity传参）
      */
-    public static String doPostJsonOne(String url, String params) throws Exception {
+    public static String doPostJsonOne(String url, String params) {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("Accept", "application/json");
@@ -137,6 +137,8 @@ public class HttpUtil {
             else{
                 LOGGER.error("请求返回: " + state + " ( " + url + " )");
             }
+        }catch (IOException e){
+            e.printStackTrace();
         }
         finally {
             if (response != null) {
