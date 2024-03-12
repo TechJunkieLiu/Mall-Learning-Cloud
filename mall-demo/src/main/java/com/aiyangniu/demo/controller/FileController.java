@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
 
 /**
  * 文件上传、下载、压缩、解压测试类
@@ -89,53 +88,7 @@ public class FileController {
         String filePath = fileProperties.getDownloadPath();
         String fileName = "download.pdf";
         String filePathName = filePath + File.separator + fileName;
-        BufferedInputStream bins = null;
-        BufferedOutputStream bouts = null;
-        try {
-            // 同一个窗口下载多次，清除空白流
-            response.reset();
-            File file = new File(filePathName);
-            if (!file.exists()) {
-                log.error("要下载的文件不存在：{}！", filePathName);
-                return;
-            }
-            bins = new BufferedInputStream(new FileInputStream(filePathName));
-            bouts = new BufferedOutputStream(response.getOutputStream());
-            String userAgent = request.getHeader("USER-AGENT").toLowerCase();
-            // 火狐浏览器
-            if (userAgent.contains("firefox")) {
-                fileName = new String(fileName.getBytes(), "ISO8859-1");
-            } else {
-                fileName = URLEncoder.encode(fileName, "UTF-8");
-            }
-            // 设置发送到客户端的响应的内容类型
-            response.setContentType("application/download");
-            // 指定客户端下载的文件的名称
-            response.setHeader("Content-disposition", "attachment;filename=" + fileName);
-            int len;
-            byte[] bytes = new byte[1024];
-            while ((len = bins.read(bytes)) != -1) {
-                bouts.write(bytes, 0, len);
-            }
-            // 刷新流
-            bouts.flush();
-            log.info("下载完成！");
-        } catch (IOException e) {
-            log.error("下载文件异常:{}！", e.getMessage());
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bouts != null) {
-                    bouts.close();
-                }
-                if (bins != null) {
-                    bins.close();
-                }
-            } catch (IOException e) {
-                log.error("关闭流异常！", e);
-                e.printStackTrace();
-            }
-        }
+        FileUtil.downloadToClient(filePathName, fileName, request, response);
     }
 
     @ApiOperation(value = "压缩、解压文件（单文件、单文件夹多文件）")

@@ -5,9 +5,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.util.Arrays;
@@ -110,9 +113,9 @@ public class FileUtil {
     /**
      * 下载文件到服务器
      *
-     * @param downloadUrl 要下载的文件的地址
-     * @param downloadPath 服务器上存储的文件路径
-     * @param downloadFileName 服务器上存储的文件名称
+     * @param downloadUrl 下载文件地址
+     * @param downloadPath 文件存储路径
+     * @param downloadFileName 文件存储名称
      */
     public static boolean downloadToServer(String downloadUrl, String downloadPath, String downloadFileName) {
         FileOutputStream fos = null;
@@ -157,6 +160,64 @@ public class FileUtil {
             }
         }
         return flag;
+    }
+
+    /**
+     * 下载文件到客户端
+     *
+     * @param filePathName 下载文件地址(含文件名)
+     * @param fileName 下载文件名称
+     * @param request HTTP请求
+     * @param response HTTP响应
+     */
+    public static void downloadToClient(String filePathName, String fileName, HttpServletRequest request, HttpServletResponse response) {
+        BufferedInputStream bins = null;
+        BufferedOutputStream bouts = null;
+        try {
+            // 同一个窗口下载多次，清除空白流
+            response.reset();
+            File file = new File(filePathName);
+            if (!file.exists()) {
+                logger.error("要下载的文件不存在：{}！", filePathName);
+                return;
+            }
+            bins = new BufferedInputStream(new FileInputStream(filePathName));
+            bouts = new BufferedOutputStream(response.getOutputStream());
+            String userAgent = request.getHeader("USER-AGENT").toLowerCase();
+            // 火狐浏览器
+            if (userAgent.contains("firefox")) {
+                fileName = new String(fileName.getBytes(), "ISO8859-1");
+            } else {
+                fileName = URLEncoder.encode(fileName, "UTF-8");
+            }
+            // 设置发送到客户端的响应的内容类型
+            response.setContentType("application/download");
+            // 指定客户端下载的文件的名称
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+            int len;
+            byte[] bytes = new byte[1024];
+            while ((len = bins.read(bytes)) != -1) {
+                bouts.write(bytes, 0, len);
+            }
+            // 刷新流
+            bouts.flush();
+            logger.info("下载完成！");
+        } catch (IOException e) {
+            logger.error("下载文件异常:{}！", e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bouts != null) {
+                    bouts.close();
+                }
+                if (bins != null) {
+                    bins.close();
+                }
+            } catch (IOException e) {
+                logger.error("关闭流异常！", e);
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
