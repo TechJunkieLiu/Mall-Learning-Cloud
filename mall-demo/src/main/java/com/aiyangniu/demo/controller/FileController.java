@@ -17,9 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLDecoder;
 
 /**
  * 文件上传、下载、压缩、解压测试类
+ * URLDecoder.decode：将 application/x-www-form-urlencoded MIME 字符串转成编码前的字符串
+ * URLEncoder.encode：将中文字符及特殊字符用转换成 application/x-www-form-urlencoded MIME 字符串
  *
  * @author lzq
  * @date 2024/03/01
@@ -88,6 +91,20 @@ public class FileController {
         String filePath = fileProperties.getDownloadPath();
         String fileName = "download.pdf";
         String filePathName = filePath + File.separator + fileName;
+        FileUtil.downloadToClient(filePathName, fileName, request, response);
+    }
+
+    @ApiOperation(value = "文件下载-合同模板（服务器下载到客户端，即浏览器请求服务器进行文件下载）")
+    @GetMapping("/downloadContract")
+    public void downloadContract(HttpServletRequest request, HttpServletResponse response) {
+        String fileName = "采购类（饲草料统采-集团-供应商模板）.xlsx";
+        String filePathName = "";
+        try {
+            filePathName = URLDecoder.decode(getClass().getResource("/template/" + fileName).getPath(), "UTF-8");
+        } catch (Exception e) {
+            log.error("下载文件地址编码转换异常:{}！", e.getMessage());
+            e.printStackTrace();
+        }
         FileUtil.downloadToClient(filePathName, fileName, request, response);
     }
 
