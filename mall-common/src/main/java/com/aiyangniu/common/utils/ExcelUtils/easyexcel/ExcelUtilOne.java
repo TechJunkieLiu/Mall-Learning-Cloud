@@ -143,8 +143,8 @@ public class ExcelUtilOne {
         if (file == null || file.isEmpty()){
             throw new RuntimeException("没有文件或者文件内容为空！");
         }
-        List<Object> dataList = null;
-        BufferedInputStream ipt = null;
+        List<Object> dataList;
+        BufferedInputStream ipt;
         try {
             InputStream is = file.getInputStream();
             // 用缓冲流对数据流进行包装

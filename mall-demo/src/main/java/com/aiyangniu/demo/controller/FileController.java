@@ -2,6 +2,7 @@ package com.aiyangniu.demo.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.aiyangniu.common.utils.FileUtil;
+import com.aiyangniu.demo.dto.AreaModelDTO;
 import com.aiyangniu.demo.dto.FileProperties;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -18,6 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 文件上传、下载、压缩、解压测试类
@@ -91,12 +96,12 @@ public class FileController {
         String filePath = fileProperties.getDownloadPath();
         String fileName = "download.pdf";
         String filePathName = filePath + File.separator + fileName;
-        FileUtil.downloadToClient(filePathName, fileName, request, response);
+        FileUtil.downloadToClient(Boolean.FALSE, filePathName, fileName, null, request, response);
     }
 
-    @ApiOperation(value = "文件下载-合同模板（服务器下载到客户端，即浏览器请求服务器进行文件下载）")
-    @GetMapping("/downloadContract")
-    public void downloadContract(HttpServletRequest request, HttpServletResponse response) {
+    @ApiOperation(value = "文件下载-采购类Excel模板（服务器下载到客户端，即浏览器请求服务器进行文件下载）")
+    @GetMapping("/downloadExcelToClient")
+    public void downloadExcelToClient(HttpServletRequest request, HttpServletResponse response) {
         String fileName = "采购类（饲草料统采-集团-供应商模板）.xlsx";
         String filePathName = "";
         try {
@@ -105,7 +110,38 @@ public class FileController {
             log.error("下载文件地址编码转换异常:{}！", e.getMessage());
             e.printStackTrace();
         }
-        FileUtil.downloadToClient(filePathName, fileName, request, response);
+        FileUtil.downloadToClient(Boolean.FALSE, filePathName, fileName, null, request, response);
+    }
+
+    @ApiOperation(value = "文件下载-导出数据到Excel模板（服务器下载到客户端，即浏览器请求服务器进行文件下载）")
+    @GetMapping("/downloadDataToClient")
+    public void downloadDataToClient(HttpServletRequest request, HttpServletResponse response) {
+        AreaModelDTO areaModelDTO1 = new AreaModelDTO();
+        AreaModelDTO areaModelDTO2 = new AreaModelDTO();
+        List<AreaModelDTO> list = new ArrayList<>();
+        areaModelDTO1.setNo(1);
+        areaModelDTO1.setAreaCode(1);
+        areaModelDTO1.setAreaName("1");
+        areaModelDTO1.setLevel(1);
+        areaModelDTO2.setNo(2);
+        areaModelDTO2.setAreaCode(2);
+        areaModelDTO2.setAreaName("2");
+        areaModelDTO2.setLevel(2);
+        list.add(areaModelDTO1);
+        list.add(areaModelDTO2);
+        Map<String, Object> map = new HashMap<>(16);
+        map.put("title", "标题");
+        map.put("list", list);
+
+        String fileName = "合同模板.xlsx";
+        String filePathName = "";
+        try {
+            filePathName = URLDecoder.decode(getClass().getResource("/template/" + fileName).getPath(), "UTF-8");
+        } catch (Exception e) {
+            log.error("下载文件地址编码转换异常:{}！", e.getMessage());
+            e.printStackTrace();
+        }
+        FileUtil.downloadToClient(Boolean.TRUE, filePathName, fileName, map, request, response);
     }
 
     @ApiOperation(value = "压缩、解压文件（单文件、单文件夹多文件）")

@@ -1,7 +1,9 @@
 package com.aiyangniu.common.utils;
 
+import net.sf.jxls.transformer.XLSTransformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +16,7 @@ import java.net.URLEncoder;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
@@ -165,12 +168,14 @@ public class FileUtil {
     /**
      * 下载文件到客户端
      *
+     * @param isData 是否需要根据模板导出数据
      * @param filePathName 下载文件地址(含文件名)
      * @param fileName 下载文件名称
+     * @param paramMap 导出数据
      * @param request HTTP请求
      * @param response HTTP响应
      */
-    public static void downloadToClient(String filePathName, String fileName, HttpServletRequest request, HttpServletResponse response) {
+    public static void downloadToClient(Boolean isData, String filePathName, String fileName, Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response) {
         BufferedInputStream bins = null;
         BufferedOutputStream bouts = null;
         try {
@@ -194,15 +199,22 @@ public class FileUtil {
             response.setContentType("application/download");
             // 指定客户端下载的文件的名称
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);
-            int len;
-            byte[] bytes = new byte[1024];
-            while ((len = bins.read(bytes)) != -1) {
-                bouts.write(bytes, 0, len);
+            // 是否根据模板导出数据
+            if (isData && null != paramMap) {
+                XLSTransformer transformer = new XLSTransformer();
+                Workbook workbook = transformer.transformXLS(bins, paramMap);
+                workbook.write(bouts);
+            }else {
+                int len;
+                byte[] bytes = new byte[1024];
+                while ((len = bins.read(bytes)) != -1) {
+                    bouts.write(bytes, 0, len);
+                }
             }
             // 刷新流
             bouts.flush();
             logger.info("下载完成！");
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("下载文件异常:{}！", e.getMessage());
             e.printStackTrace();
         } finally {

@@ -102,8 +102,8 @@ public class ExcelUtilTwo {
     /**
      * word模板批量导出多页
      */
-    public static void WordTemplateExportMorePage(List<Map<String, Object>> list, String templatePath, String fileName, HttpServletResponse response) throws Exception {
-        XWPFDocument doc = new ParseWord07().parseWord(templatePath, list);
+    public static void WordTemplateExportMorePage(Map<String, Object> map, String templatePath, String fileName, HttpServletResponse response) throws Exception {
+        XWPFDocument doc = new ParseWord07().parseWord(templatePath, map);
         downLoadWord(fileName, response, doc);
     }
 
@@ -178,7 +178,7 @@ public class ExcelUtilTwo {
             params.setHeadRows(headerRows);
             params.setSaveUrl("/excel/");
             params.setNeedSave(true);
-            params.setNeedVerify(true);
+            params.setNeedVerfiy(true);
             try {
                 return ExcelImportUtil.importExcelMore(inputStream, pojoClass, params);
             } catch (NoSuchElementException e) {

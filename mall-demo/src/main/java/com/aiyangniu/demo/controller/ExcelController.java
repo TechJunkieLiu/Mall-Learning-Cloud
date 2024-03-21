@@ -71,9 +71,9 @@ public class ExcelController {
             ExcelUtilTwo.exportExcel(list, "title", "sheetName", PmsBrandForEasyPoi.class, fileName, response);
             ExcelUtilTwo.exportExcel(list, "title", "sheetName", PmsBrandForEasyPoi.class, fileName, false, response);
             ExcelUtilTwo.exportExcel(new ArrayList<>(), fileName, response);
-//            ExcelUtil_Two.exportExcel(new TemplateExportParams(), new HashMap<>(16), fileName, response);
-//            ExcelUtil_Two.WordTemplateExport(new HashMap<>(16), "D:\\excel\\pms_brand.xlsx", fileName, response);
-//            ExcelUtil_Two.WordTemplateExportMorePage(new ArrayList<>(), "D:\\excel\\pms_brand.xlsx", fileName, response);
+//            ExcelUtilTwo.exportExcel(new TemplateExportParams(), new HashMap<>(16), fileName, response);
+//            ExcelUtilTwo.WordTemplateExport(new HashMap<>(16), "D:\\excel\\pms_brand.xlsx", fileName, response);
+//            ExcelUtilTwo.WordTemplateExportMorePage(new HashMap<>(16), "D:\\excel\\pms_brand.xlsx", fileName, response);
         } catch (Exception e) {
             throw new ApiException("数据导出失败", e);
         }

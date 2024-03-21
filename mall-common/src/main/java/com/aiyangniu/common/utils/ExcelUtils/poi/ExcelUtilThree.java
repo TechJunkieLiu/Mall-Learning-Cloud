@@ -256,7 +256,6 @@ public class ExcelUtilThree {
             JSONArray arr = readSheet(sheet);
             map.put(sheet.getSheetName(), arr);
         }
-        book.close();
         return map;
     }
 
@@ -266,7 +265,6 @@ public class ExcelUtilThree {
             return new JSONArray();
         }
         JSONArray array = readSheet(book.getSheetAt(0));
-        book.close();
         return array;
     }
 
@@ -360,11 +358,11 @@ public class ExcelUtilThree {
 
     private static String getCellValue(Cell cell) {
         // 空白或空
-        if (cell == null || cell.getCellTypeEnum() == CellType.BLANK) {
+        if (cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK) {
             return "";
         }
         // String类型
-        if (cell.getCellTypeEnum() == CellType.STRING) {
+        if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
             String val = cell.getStringCellValue();
             if (val == null || val.trim().length() == 0) {
                 return "";
@@ -372,7 +370,7 @@ public class ExcelUtilThree {
             return val.trim();
         }
         // 数字类型
-        if (cell.getCellTypeEnum() == CellType.NUMERIC) {
+        if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
             String s = cell.getNumericCellValue() + "";
             // 去掉尾巴上的小数点0
             if (Pattern.matches(".*\\.0*", s)) {
@@ -382,7 +380,7 @@ public class ExcelUtilThree {
             }
         }
         // 布尔值类型
-        if (cell.getCellTypeEnum() == CellType.BOOLEAN) {
+        if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
             return cell.getBooleanCellValue() + "";
         }
         // 错误类型
@@ -724,17 +722,17 @@ public class ExcelUtilThree {
                 List<List<Object>> sheetDataList = entry.getValue();
                 book = new SXSSFWorkbook();
                 Sheet sheet = book.createSheet(entry.getKey());
-                Drawing<?> patriarch = sheet.createDrawingPatriarch();
+                Drawing patriarch = sheet.createDrawingPatriarch();
                 // 设置表头背景色（灰色）
                 CellStyle headStyle = book.createCellStyle();
                 headStyle.setFillForegroundColor(IndexedColors.GREY_80_PERCENT.index);
-                headStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-                headStyle.setAlignment(HorizontalAlignment.CENTER);
+                headStyle.setFillPattern((short) FillPatternType.SOLID_FOREGROUND.ordinal());
+                headStyle.setAlignment((short) HorizontalAlignment.CENTER.ordinal());
                 headStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
                 // 设置表身背景色（默认色）
                 CellStyle rowStyle = book.createCellStyle();
-                rowStyle.setAlignment(HorizontalAlignment.CENTER);
-                rowStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+                rowStyle.setAlignment((short) HorizontalAlignment.CENTER.ordinal());
+                rowStyle.setVerticalAlignment((short) VerticalAlignment.CENTER.ordinal());
                 // 设置表格列宽度（默认为15个字节）
                 sheet.setDefaultColumnWidth(15);
                 // 自适应列宽度。版本不能太老。合并的单元格只能使用第二个方法。经过测试，遇到行数多一点的数据就会耗费大量的时间，1000行花了大约2分钟，慎用！！！
@@ -895,7 +893,7 @@ public class ExcelUtilThree {
         cell.setCellStyle(style);
         // 数据为空时
         if (o == null || "".equals(o)) {
-            cell.setCellType(CellType.STRING);
+            cell.setCellType(Cell.CELL_TYPE_STRING);
             cell.setCellValue("");
             return CELL_OTHER;
         }
@@ -904,11 +902,11 @@ public class ExcelUtilThree {
             String s = o.toString();
             // 当数字类型长度超过8位时，改为字符串类型显示（Excel数字超过一定长度会显示为科学计数法）
             if (isNumeric(s) && s.length() < 8) {
-                cell.setCellType(CellType.NUMERIC);
+                cell.setCellType(Cell.CELL_TYPE_NUMERIC);
                 cell.setCellValue(Double.parseDouble(s));
                 return CELL_OTHER;
             } else {
-                cell.setCellType(CellType.STRING);
+                cell.setCellType(Cell.CELL_TYPE_STRING);
                 cell.setCellValue(s);
             }
             if (s.equals(ROW_MERGE)) {
@@ -921,35 +919,35 @@ public class ExcelUtilThree {
         }
         // 是否为字符串
         if (o instanceof Integer || o instanceof Long || o instanceof Double || o instanceof Float) {
-            cell.setCellType(CellType.NUMERIC);
+            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
             cell.setCellValue(Double.parseDouble(o.toString()));
             return CELL_OTHER;
         }
         // 是否为Boolean
         if (o instanceof Boolean) {
-            cell.setCellType(CellType.BOOLEAN);
+            cell.setCellType(Cell.CELL_TYPE_BOOLEAN);
             cell.setCellValue((Boolean) o);
             return CELL_OTHER;
         }
         // 如果是BigDecimal，则默认3位小数
         if (o instanceof BigDecimal) {
-            cell.setCellType(CellType.NUMERIC);
+            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
             cell.setCellValue(((BigDecimal) o).setScale(3, RoundingMode.HALF_UP).doubleValue());
             return CELL_OTHER;
         }
         // 如果是Date数据，则显示格式化数据
         if (o instanceof Date) {
-            cell.setCellType(CellType.STRING);
+            cell.setCellType(Cell.CELL_TYPE_STRING);
             cell.setCellValue(formatDate((Date) o));
             return CELL_OTHER;
         }
         // 如果是其他，则默认字符串类型
-        cell.setCellType(CellType.STRING);
+        cell.setCellType(Cell.CELL_TYPE_STRING);
         cell.setCellValue(o.toString());
         return CELL_OTHER;
     }
 
-    private static void setCellPicture(SXSSFWorkbook wb, Row sr, Drawing<?> patriarch, int x, int y, URL url) {
+    private static void setCellPicture(SXSSFWorkbook wb, Row sr, Drawing patriarch, int x, int y, URL url) {
         // 设置图片宽高
         sr.setHeight((short) (IMG_WIDTH * IMG_HEIGHT));
         // （jdk1.7版本try中定义流可自动关闭）
@@ -962,7 +960,7 @@ public class ExcelUtilThree {
             // 设置图片位置
             XSSFClientAnchor anchor = new XSSFClientAnchor(0, 0, 0, 0, y, x, y + 1, x + 1);
             // 设置这个，图片会自动填满单元格的长宽
-            anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_AND_RESIZE);
+            anchor.setAnchorType(ClientAnchor.MOVE_AND_RESIZE);
             patriarch.createPicture(anchor, wb.addPicture(outputStream.toByteArray(), HSSFWorkbook.PICTURE_TYPE_JPEG));
         } catch (Exception e) {
             e.printStackTrace();

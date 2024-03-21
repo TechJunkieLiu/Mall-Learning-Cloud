@@ -89,6 +89,7 @@
                 <configuration>
                     <nonFilteredFileExtensions>
                         <!-- 防止xlsx文件被过滤，导致build之后target下对应的xlsx损坏 -->
+                        <nonFilteredFileExtension>xls</nonFilteredFileExtension>
                         <nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>

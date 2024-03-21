@@ -30,7 +30,7 @@ public class CommentWriteHandler implements RowWriteHandler {
     @Override
     public void afterRowDispose(WriteSheetHolder writeSheetHolder, WriteTableHolder writeTableHolder, Row row, Integer relativeRowIndex, Boolean isHead) {
         Sheet sheet = writeSheetHolder.getSheet();
-        Drawing<?> drawingPatriarch = sheet.createDrawingPatriarch();
+        Drawing drawingPatriarch = sheet.createDrawingPatriarch();
         // 在第一行 第二列创建一个批注
         Comment comment1 = drawingPatriarch.createCellComment(new XSSFClientAnchor(0, 0, 0, 0, (short)0, 0, (short)1, 1));
         // 输入批注信息
