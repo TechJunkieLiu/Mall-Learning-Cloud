@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * 用户地址管理Mapper
  *
  * @author lzq
- * @date 2023/09/20
+ * @date 2024/03/22
  */
 public interface UmsMemberReceiveAddressMapper extends BaseMapper<UmsMemberReceiveAddress> {
 }

@@ -1,25 +1,13 @@
 package com.aiyangniu.gate.mapper;
 
-import com.aiyangniu.entity.model.bo.PmsProductAttrInfo;
 import com.aiyangniu.entity.model.pojo.pms.PmsProductAttribute;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * 商品属性管理Mapper
  *
  * @author lzq
- * @date 2023/09/20
+ * @date 2024/03/22
  */
 public interface PmsProductAttributeMapper extends BaseMapper<PmsProductAttribute> {
-
-    /**
-     * 获取商品分类对应属性列表
-     *
-     * @param productCategoryId 商品分类ID
-     * @return 属性列表
-     */
-    List<PmsProductAttrInfo> getProductAttrInfo(@Param("id") Long productCategoryId);
 }
