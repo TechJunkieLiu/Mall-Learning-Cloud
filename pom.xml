@@ -42,7 +42,7 @@
         <druid.version>1.2.14</druid.version>
         <hutool.version>5.4.0</hutool.version>
         <easyexcel.version>3.0.5</easyexcel.version>
-        <easypoi-base.version>3.2.0</easypoi-base.version>
+        <easypoi-base.version>4.4.0</easypoi-base.version>
         <jxls-core.version>1.0.6</jxls-core.version>
         <poi.version>3.15</poi.version>
         <httpcore.version>4.4.13</httpcore.version>
