@@ -23,7 +23,7 @@ public class CommonResult<T> {
      */
     private T data;
 
-    protected CommonResult() {
+    public CommonResult() {
     }
 
     protected CommonResult(long code, String message, T data) {

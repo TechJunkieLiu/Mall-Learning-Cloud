@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * 全局异常处理
+ * 全局异常处理（基于 @ControllerAdvice + @ExceptionHandler 注解）
  *
  * @author lzq
  * @date 2023/09/22
