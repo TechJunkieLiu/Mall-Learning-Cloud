@@ -47,6 +47,7 @@
         <poi.version>3.15</poi.version>
         <httpcore.version>4.4.13</httpcore.version>
         <httpclient.version>4.5.14</httpclient.version>
+        <commons-httpclient.version>3.1</commons-httpclient.version>
         <mybatis.version>3.5.5</mybatis.version>
         <mybatis-plus-boot-starter.version>3.3.1</mybatis-plus-boot-starter.version>
         <mysql-connector.version>8.0.20</mysql-connector.version>
@@ -219,11 +220,16 @@
                 <artifactId>httpcore</artifactId>
                 <version>${httpcore.version}</version>
             </dependency>
-            <!-- Http工具类 -->
+            <!-- Http工具类(HttpClient/CloseableHttpClient) -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${commons-httpclient.version}</version>
             </dependency>
             <!--Knife4j API文档生产工具-->
             <dependency>

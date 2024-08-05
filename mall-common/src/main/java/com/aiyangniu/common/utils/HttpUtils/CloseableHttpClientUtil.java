@@ -2,8 +2,11 @@ package com.aiyangniu.common.utils.HttpUtils;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import org.apache.http.*;
-import org.apache.http.client.HttpClient;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -13,7 +16,6 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -40,16 +42,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * HTTP封装工具类
+ * 通过Apache封装好的CloseableHttpClient
+ * CloseableHttpClient是在HttpClient的基础上修改更新而来的
+ * 涉及到请求头token的设置（请求验证），利用fastjson转换请求或返回结果字符串为json格式，当然上面两种方式也是可以设置请求头token、json的
  *
  * @author lzq
- * @date 2023/08/23
+ * @date 2024/05/06
  */
-public class HttpUtil {
+public class CloseableHttpClientUtil {
 
     public static final String CHARSET = "UTF-8";
     private static final CloseableHttpClient HTTP_CLIENT;
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloseableHttpClientUtil.class);
+
+    private static String tokenString = "";
+
     // 采用静态代码块，初始化超时时间配置，再根据配置生成默认httpClient对象
     static {
         RequestConfig config = RequestConfig.custom().setConnectTimeout(60000).setSocketTimeout(15000).build();
@@ -57,26 +64,32 @@ public class HttpUtil {
     }
 
     /**
-     * HTTP Get
+     * Get
      */
-    public static String doGet(String url) {
+    public static String doGet(String url, String token) {
+        HttpGet httpGet = new HttpGet(url);
         try {
-            HttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet(url);
-            HttpResponse response = client.execute(request);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                // 读取json字符串
-                return EntityUtils.toString(response.getEntity());
+            if (tokenString != null && !tokenString.equals("")){
+                tokenString = getToken();
             }
-        }
-        catch (IOException e) {
+            // api_gateway_auth_token自定义header头，用于token验证使用
+            httpGet.addHeader("api_gateway_auth_token", token);
+            httpGet.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36");
+
+            HttpResponse response = HTTP_CLIENT.execute(httpGet);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                // 返回json格式
+                String res = EntityUtils.toString(response.getEntity());
+                return res;
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
     /**
-     * HTTP Get
+     * Get
      */
     public static String doGet(String url, Map<String, String> params) {
         if (StrUtil.isBlank(url)) {
@@ -116,10 +129,44 @@ public class HttpUtil {
     }
 
     /**
+     * HTTP Post
+     */
+    public static String doPost(String url, JSONObject json) {
+        HttpPost httpPost = new HttpPost(url);
+        // api_gateway_auth_token自定义header头，用于token验证使用
+        httpPost.addHeader("api_gateway_auth_token",  getToken());
+        httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36");
+        try {
+            StringEntity se = new StringEntity(json.toString());
+            se.setContentEncoding("UTF-8");
+            // 发送json数据需要设置contentType
+            se.setContentType("application/x-www-form-urlencoded");
+            // 设置请求参数
+            httpPost.setEntity(se);
+            HttpResponse response = HTTP_CLIENT.execute(httpPost);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                // 返回json格式
+                String res = EntityUtils.toString(response.getEntity());
+                return res;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (HTTP_CLIENT != null){
+                try {
+                    HTTP_CLIENT.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * HTTP Post（用于请求json格式的参数，StringEntity传参）
      */
     public static String doPostJsonOne(String url, String params) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         httpPost.setHeader("Accept", "application/json");
         httpPost.setHeader("Content-Type", "application/json");
@@ -128,7 +175,7 @@ public class HttpUtil {
         httpPost.setEntity(entity);
         CloseableHttpResponse response = null;
         try {
-            response = httpclient.execute(httpPost);
+            response = HTTP_CLIENT.execute(httpPost);
             int state = response.getStatusLine().getStatusCode();
             if (state == HttpStatus.SC_OK) {
                 HttpEntity responseEntity = response.getEntity();
@@ -148,11 +195,6 @@ public class HttpUtil {
                     e.printStackTrace();
                 }
             }
-            try {
-                httpclient.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         return null;
     }
@@ -160,7 +202,7 @@ public class HttpUtil {
     /**
      * HTTP Post（用于请求json格式的参数，StringEntity传参）
      */
-    public static String doPostJsonTwo(String url, String params) throws IOException {
+    public static String doPostJsonTwo(String url, String params) {
         if (StrUtil.isBlank(url)) {
             return null;
         }
@@ -181,7 +223,7 @@ public class HttpUtil {
             }
             EntityUtils.consume(entity);
             return result;
-        } catch (ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -193,11 +235,9 @@ public class HttpUtil {
     public static String doPostKvOne(String url, Map<String, String> params){
         BufferedReader in = null;
         try {
-            // 定义HttpClient
-            HttpClient client = new DefaultHttpClient();
             // 实例化HTTP方法
-            HttpPost request = new HttpPost();
-            request.setURI(new URI(url));
+            HttpPost httpPost = new HttpPost();
+            httpPost.setURI(new URI(url));
 
             // 设置参数
             List<NameValuePair> nameValuePairList = new ArrayList<>();
@@ -207,9 +247,9 @@ public class HttpUtil {
                 String value = String.valueOf(params.get(name));
                 nameValuePairList.add(new BasicNameValuePair(name, value));
             }
-            request.setEntity(new UrlEncodedFormEntity(nameValuePairList, CHARSET));
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairList, CHARSET));
 
-            HttpResponse response = client.execute(request);
+            HttpResponse response = HTTP_CLIENT.execute(httpPost);
             int code = response.getStatusLine().getStatusCode();
             if(code ==  HttpStatus.SC_OK){
                 in = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), StandardCharsets.UTF_8));
@@ -235,7 +275,7 @@ public class HttpUtil {
     /**
      * HTTP Post（用于key-value格式的参数，UrlEncodedFormEntity传参）
      */
-    public static String doPostKvTwo(String url, Map<String, String> params) throws IOException {
+    public static String doPostKvTwo(String url, Map<String, String> params) {
         if (StrUtil.isBlank(url)) {
             return null;
         }
@@ -250,12 +290,12 @@ public class HttpUtil {
             }
         }
         HttpPost httpPost = new HttpPost(url);
-        if (pairs != null && pairs.size() > 0) {
-            // 传入的不管是String、Boolean、Integer，这里放到 Http Entity 里面的类型都是字节类型，都是通过将byte进行ASCII编码来实现的，
-            // 服务器端反序列化成String类型后，通过MVC的框架进行解析，注意这里也需要区分提交方式，框架可能会选取适当的httpMessageConverter进行解析
-            httpPost.setEntity(new UrlEncodedFormEntity(pairs, CHARSET));
-        }
         try (CloseableHttpResponse response = HTTP_CLIENT.execute(httpPost)) {
+            if (pairs != null && pairs.size() > 0) {
+                // 传入的不管是String、Boolean、Integer，这里放到 Http Entity 里面的类型都是字节类型，都是通过将byte进行ASCII编码来实现的，
+                // 服务器端反序列化成String类型后，通过MVC的框架进行解析，注意这里也需要区分提交方式，框架可能会选取适当的httpMessageConverter进行解析
+                httpPost.setEntity(new UrlEncodedFormEntity(pairs, CHARSET));
+            }
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode !=  HttpStatus.SC_OK) {
                 httpPost.abort();
@@ -268,7 +308,7 @@ public class HttpUtil {
             }
             EntityUtils.consume(entity);
             return result;
-        } catch (ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -294,8 +334,8 @@ public class HttpUtil {
             }
             HttpGet httpGet = new HttpGet(url);
 
-            // https 注意这里获取https内容，使用了忽略证书的方式，当然还有其他的方式来获取https内容
-            CloseableHttpClient httpsClient = HttpUtil.createSSLClientDefault();
+            // https 注意这里获取https内容，使用了忽略证书的方式(创建忽略整数验证的CloseableHttpClient对象)，当然还有其他的方式来获取https内容
+            CloseableHttpClient httpsClient = CloseableHttpClientUtil.createSSLClientDefault();
             CloseableHttpResponse response = httpsClient.execute(httpGet);
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode !=  HttpStatus.SC_OK) {
@@ -316,9 +356,34 @@ public class HttpUtil {
         return null;
     }
 
-    /**
-     * 创建忽略整数验证的CloseableHttpClient对象
-     */
+    public static String getToken() {
+        String token = "";
+        JSONObject object = new JSONObject();
+        object.put("appid", "appid");
+        object.put("secretkey", "secretkey");
+        HttpPost httpPost = new HttpPost("http://localhost/login");
+        httpPost.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36");
+        try {
+            StringEntity se = new StringEntity(object.toString());
+            se.setContentEncoding("UTF-8");
+            // 发送json数据需要设置contentType
+            se.setContentType("application/x-www-form-urlencoded");
+            // 设置请求参数
+            httpPost.setEntity(se);
+            HttpResponse response = HTTP_CLIENT.execute(httpPost);
+            // 这里可以把返回的结果按照自定义的返回数据结果，把string转换成自定义类
+            // ResultTokenBO result = JSONObject.parseObject(response, ResultTokenBO.class);
+            // 把response转为jsonObject
+            JSONObject result = (JSONObject) JSONObject.parseObject(String.valueOf(response));
+            if (result.containsKey("token")) {
+                token = result.getString("token");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return token;
+    }
+
     public static CloseableHttpClient createSSLClientDefault() {
         try {
             SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
@@ -328,8 +393,8 @@ public class HttpUtil {
                     return true;
                 }
             }).build();
-            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
-            return HttpClients.custom().setSSLSocketFactory(sslsf).build();
+            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext);
+            return HttpClients.custom().setSSLSocketFactory(sslConnectionSocketFactory).build();
         } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
             e.printStackTrace();
         }
