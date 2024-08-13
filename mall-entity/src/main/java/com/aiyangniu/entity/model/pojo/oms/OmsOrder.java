@@ -50,7 +50,7 @@ public class OmsOrder implements Serializable {
     @ApiModelProperty(value = "运费金额")
     private BigDecimal freightAmount;
 
-    @ApiModelProperty(value = "促销优化金额（促销价、满减、阶梯价）")
+    @ApiModelProperty(value = "促销优惠金额（促销价、满减、阶梯价）")
     private BigDecimal promotionAmount;
 
     @ApiModelProperty(value = "积分抵扣金额")
