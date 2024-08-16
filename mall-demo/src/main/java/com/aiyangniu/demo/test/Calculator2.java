@@ -1,12 +1,11 @@
 package com.aiyangniu.demo.test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Stack;
 
 /**
  * 计算器（Stack栈，含小括号，含小数点）
- * 输入中缀表达式，转为对应中缀List，转为对应后缀List，计算得出结果
+ * 输入中缀表达式，转为后缀表达式，计算得出结果
  *
  * @author lzq
  * @date 2024/08/13
@@ -14,130 +13,118 @@ import java.util.Stack;
 public class Calculator2 {
 
     public static void main(String[] args) {
+        String infix = "3-25.36/3+2.77*3.88-(2+4.99)"; // 有问题：(10-5/(930+500)/120)*365
         Calculator2 calculator2 = new Calculator2();
-        List<String> infixList = calculator2.toInfixList("100-25.36/3+2.77*3.88-(2+4.99)");
-        System.out.println("中缀List：" + infixList);
-        List<String> suffixList = calculator2.infix2SuffixList(infixList);
-        System.out.println("后缀List：" + suffixList);
-        double result = calculator2.calculate(suffixList);
+        String[] suffix = calculator2.infix2Suffix(infix);
+        System.out.println("后缀List：" + Arrays.toString(suffix));
+        double result = calculator2.cal(suffix);
         System.out.println("结果：" + result);
     }
 
     /**
-     * 中缀表达式 => 对应List
+     * 中缀表达式转后缀表达式
      */
-    public List<String> toInfixList(String s) {
-        List<String> infixList = new ArrayList<>();
-        // 指针用于遍历中缀表达式字符串
-        int i = 0;
-        // 对多位数的拼接
-        String str;
-        // 每遍历到一个字符，就放入到c
-        char c;
-        do {
-            // 如果c是一个非数字（除小数点），则加入到infixList
-            if (((c = s.charAt(i)) < 48 || (c = s.charAt(i)) > 57) && (c = s.charAt(i)) != 46) {
-                infixList.add("" + c);
-                // i需要后移
-                i++;
-                // 如果是一个数（包括小数点），需要考虑多位数（'0'[48]->'9'[57]）或（'.'[46]）
-            } else {
-                str = "";
-                while (i < s.length() && ((c = s.charAt(i)) >= 48 || (c = s.charAt(i)) == 46) && (c = s.charAt(i)) <= 57) {
-                    // 拼接
-                    str += c;
-                    i++;
-                }
-                infixList.add(str);
-            }
-        } while (i < s.length());
-        return infixList;
-    }
-
-    /**
-     * 中缀表达式对应List => 后缀表达式对应List
-     */
-    public List<String> infix2SuffixList(List<String> infixList) {
+    public String[] infix2Suffix(String infix) {
+        // 用于拼接多位数
+        String keepNum = "";
+        // 符号栈，用于存储运算符
         Stack<String> operatorStack = new Stack<>();
-        // 因为tempList这个栈在整个转换过程中，没有pop操作，而且后面还需要逆序输出，所以用List
-        List<String> tempList = new ArrayList<>();
-        for (String infix : infixList) {
-            // 如果是一个数（整数+小数），加入tempList
-            if (infix.matches("^[0-9]+(\\.[0-9]+)?$")) {
-                tempList.add(infix);
-                // 如果是 (，则直接入栈
-            } else if (infix.equals("(")) {
-                operatorStack.push(infix);
-            } else if (infix.equals(")")) {
-                // 如果是 )，则依次弹出栈顶的运算符，并将括号内的值算出，压入tempList直到遇到左括号为止，此时将这一对括号丢弃
-                while (!operatorStack.empty() && !operatorStack.peek().equals("(")) {
-                    tempList.add(operatorStack.pop());
+        // 后缀表达式，为了将多位数存储为独立的字符串
+        Stack<String> suffixQueue = new Stack<>();
+
+        // 遍历中缀表达式
+        for (int i = 0; i < infix.length(); i++) {
+            // 数字直接加入后缀表达式，符号需要操作处理
+            if ("1234567890.".indexOf(infix.charAt(i)) >= 0) {
+                // 判断并记录多位操作数（注意每次开始时都要清空）
+                keepNum = "";
+                for (; i < infix.length() && "0123456789.".indexOf(infix.charAt(i)) >= 0; i++) {
+                    keepNum += infix.charAt(i);
                 }
-                // 将 ( 弹出栈，消除小括号
+                // 避免跳过对非数字字符的处理
+                i--;
+                suffixQueue.push(keepNum);
+                // 左括号入栈
+            } else if ("(".indexOf(infix.charAt(i)) >= 0) {
+                operatorStack.push(String.valueOf(infix.charAt(i)));
+                // 右括号，栈顶元素循环出栈，直到遇到左括号为止
+            } else if (")".indexOf(infix.charAt(i)) >= 0) {
+                while (!"(".equals(operatorStack.peek())) {
+                    suffixQueue.push(operatorStack.pop());
+                }
+                // 删除左括号
                 operatorStack.pop();
-            } else {
-                // 否则比较当前运算符和栈顶运算符优先级
-                // 当infix的优先级小于等于栈顶运算符
-                // 将栈顶的运算符弹出并加入到tempList中，再次与新的栈顶运算符相比较
-                while (operatorStack.size() != 0 && priority(operatorStack.peek()) >= priority(infix)) {
-                    tempList.add(operatorStack.pop());
+                // 运算符
+            } else if ("*%/+-".indexOf(infix.charAt(i)) >= 0) {
+                // 若栈不为空或栈顶元素不为左括号
+                if (!operatorStack.empty() && !"(".contains(operatorStack.peek())) {
+                    // 当栈顶元素为高优先级或同级运算符时，让栈顶元素出栈进入后缀表达式后，直到符合规则后，当前运算符再入栈
+                    boolean rule = ("*%/+-".contains(operatorStack.peek()) && "+-".indexOf(infix.charAt(i)) >= 0) || ("*%/".contains(operatorStack.peek()) && "*%/".indexOf(infix.charAt(i)) >= 0);
+                    while (!operatorStack.empty() && rule) {
+                        // 返回栈顶的元素但不移除
+                        suffixQueue.push(operatorStack.peek());
+                        operatorStack.pop();
+                    }
                 }
-                // 还需要将infix压入栈
-                operatorStack.push(infix);
+                operatorStack.push(String.valueOf(infix.charAt(i)));
             }
         }
-        // 将剩余的运算符依次弹出并加入tempList
-        while (operatorStack.size() != 0) {
-            tempList.add(operatorStack.pop());
+        // 遍历结束后将栈中剩余元素依次出栈进入后缀表达式
+        while (!operatorStack.empty()) {
+            suffixQueue.push(operatorStack.pop());
         }
-        // 注意因为是存放到List，因此按顺序输出就是对应的后缀表达式对应的List
-        return tempList;
+        // 将后缀表达式栈转换为字符串数组格式
+        String[] suffix = new String[suffixQueue.size()];
+        for (int i = suffixQueue.size() - 1; i >= 0; i--) {
+            suffix[i] = suffixQueue.pop();
+        }
+        return suffix;
     }
 
-    public double calculate(List<String> suffixList) {
+    public double cal(String[] suffix) {
+        // 顺序存储的栈
         Stack<String> result = new Stack<>();
-        for (String suffix : suffixList) {
-            // 使用正则表达式来取出数，匹配的是多位数（整数+小数）
-            if (suffix.matches("^[0-9]+(\\.[0-9]+)?$")) {
-                // 入栈
-                result.push(suffix);
+        int i;
+        for (i = 0; i < suffix.length; i++) {
+            // 数字直接入栈，运算符字符将栈顶两个元素出栈计算并将结果返回栈顶
+            if ("1234567890.".indexOf(suffix[i].charAt(0)) >= 0) {
+                result.push(suffix[i]);
             } else {
-                // pop出两个数，并运算，再入栈
-                double num2 = Double.parseDouble(result.pop());
-                double num1 = Double.parseDouble(result.pop());
-                double res = 0;
-                switch (suffix) {
-                    case "+":
-                        res = num1 + num2;
-                        break;
-                    case "-":
-                        res = num1 - num2;
-                        break;
+                double x, y, n = 0;
+                // 顺序出栈两个数字字符串，并转换为double类型
+                x = Double.parseDouble(result.pop());
+                y = Double.parseDouble(result.pop());
+                switch (suffix[i]) {
                     case "*":
-                        res = num1 * num2;
+                        n = y * x;
                         break;
                     case "/":
-                        res = num1 / num2;
+                        if (x == 0) {
+                            return 000000;
+                        } else {
+                            n = y / x;
+                        }
+                        break;
+                    case "%":
+                        if (x == 0) {
+                            return 000000;
+                        } else {
+                            n = y % x;
+                        }
+                        break;
+                    case "-":
+                        n = y - x;
+                        break;
+                    case "+":
+                        n = y + x;
                         break;
                     default:
                         throw new RuntimeException("运算符有误！");
                 }
-                // 入栈
-                result.push("" + res);
+                // 将运算结果重新入栈
+                result.push(String.valueOf(n));
             }
         }
-        // 最后留在栈中的数据是运算结果
-        return Double.parseDouble(result.pop());
-    }
-
-    public int priority(String operator) {
-        if ("*".equals(operator) || "/".equals(operator)) {
-            return 1;
-        } else if ("+".equals(operator) || "-".equals(operator)) {
-            return 0;
-        } else {
-            // 假定目前的表达式只有 + - * /
-            return -1;
-        }
+        return Double.parseDouble(result.peek());
     }
 }
