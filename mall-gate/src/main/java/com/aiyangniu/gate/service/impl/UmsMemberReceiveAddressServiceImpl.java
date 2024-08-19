@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -29,5 +30,15 @@ public class UmsMemberReceiveAddressServiceImpl extends ServiceImpl<UmsMemberRec
     public List<UmsMemberReceiveAddress> list() {
         UmsMember currentMember = umsMemberService.getCurrentMember();
         return list(new LambdaQueryWrapper<UmsMemberReceiveAddress>().eq(UmsMemberReceiveAddress::getMemberId, currentMember.getId()));
+    }
+
+    @Override
+    public UmsMemberReceiveAddress getItem(Long id) {
+        UmsMember currentMember = umsMemberService.getCurrentMember();
+        List<UmsMemberReceiveAddress> addressList = list(new LambdaQueryWrapper<UmsMemberReceiveAddress>().eq(UmsMemberReceiveAddress::getMemberId, currentMember.getId()).eq(UmsMemberReceiveAddress::getId, id));
+        if (!CollectionUtils.isEmpty(addressList)){
+            return addressList.get(0);
+        }
+        return null;
     }
 }

@@ -1,7 +1,6 @@
 package com.aiyangniu.gate.service;
 
 import com.aiyangniu.entity.model.pojo.ums.UmsMemberReceiveAddress;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,4 +18,12 @@ public interface UmsMemberReceiveAddressService {
      * @return 收货地址
      */
     List<UmsMemberReceiveAddress> list();
+
+    /**
+     * 获取地址详情
+     *
+     * @param id 地址id
+     * @return 地址详情
+     */
+    UmsMemberReceiveAddress getItem(Long id);
 }
