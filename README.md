@@ -74,3 +74,13 @@ mall-learning-cloud
 > Docker环境部署
 
 待补充。。。
+
+> Kubernetes环境部署
+
+待补充。。。
+## 六、运行效果展示
+- 查看注册中心注册服务信息，访问地址：http://localhost:8848/nacos/
+- 监控中心应用信息，访问地址：http://localhost:8101
+- API文档信息，访问地址：http://localhost:8201
+- 日志收集系统信息，访问地址：http://localhost:5601
+- 可视化容器管理，访问地址：http://localhost:9000
