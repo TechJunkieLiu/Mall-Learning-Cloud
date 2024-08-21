@@ -54,4 +54,14 @@ public interface OmsGateOrderService {
      */
     @Transactional(rollbackFor = RuntimeException.class)
     Integer cancelTimeOutOrder();
+
+    /**
+     * 支付成功后的回调
+     *
+     * @param orderId 订单ID
+     * @param payType 支付方式
+     * @return 恢复所有下单商品的库存数量
+     */
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    Integer paySuccess(Long orderId, Integer payType);
 }

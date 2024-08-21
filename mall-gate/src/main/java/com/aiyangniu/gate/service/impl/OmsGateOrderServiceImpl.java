@@ -233,33 +233,6 @@ public class OmsGateOrderServiceImpl implements OmsGateOrderService {
     }
 
     @Override
-    public void cancelOrder(Long orderId) {
-        // 查询未付款的取消订单
-        List<OmsOrder> cancelOrderList = omsOrderMapper.selectList(new LambdaQueryWrapper<OmsOrder>().eq(OmsOrder::getId, orderId).eq(OmsOrder::getStatus, 0).eq(OmsOrder::getDeleteStatus, 0));
-        if (CollectionUtils.isEmpty(cancelOrderList)) {
-            return;
-        }
-        OmsOrder cancelOrder = cancelOrderList.get(0);
-        if (cancelOrder != null) {
-            // 修改订单状态为取消
-            cancelOrder.setStatus(4);
-            omsOrderMapper.updateById(cancelOrder);
-            List<OmsOrderItem> orderItemList = omsOrderItemMapper.selectList(new LambdaQueryWrapper<OmsOrderItem>().eq(OmsOrderItem::getOrderId, orderId));
-            // 解除订单商品库存锁定
-            if (!CollectionUtils.isEmpty(orderItemList)) {
-                gateOrderMapper.releaseSkuStockLock(orderItemList);
-            }
-            // 修改优惠券使用状态
-            updateCouponStatus(cancelOrder.getCouponId(), cancelOrder.getMemberId(), 0);
-            // 返还使用积分
-            if (cancelOrder.getUseIntegration() != null) {
-                UmsMember member = umsMemberService.getById(cancelOrder.getMemberId());
-                umsMemberService.updateIntegration(cancelOrder.getMemberId(), member.getIntegration() + cancelOrder.getUseIntegration());
-            }
-        }
-    }
-
-    @Override
     public void sendDelayMessageCancelOrder(Long orderId) {
         // 获取订单超时时间
         OmsOrderSetting orderSetting = omsOrderSettingMapper.selectById(orderId);
@@ -268,29 +241,18 @@ public class OmsGateOrderServiceImpl implements OmsGateOrderService {
         cancelOrderSender.sendMessage(orderId, delayTimes);
     }
 
-    /**
-     * 将优惠券信息更改为指定状态
-     *
-     * @param couponId  优惠券ID
-     * @param memberId  会员ID
-     * @param useStatus 0->未使用 1->已使用
-     */
-    private void updateCouponStatus(Long couponId, Long memberId, Integer useStatus) {
-        if (couponId == null) {
-            return;
-        }
-        // 查询第一张优惠券
-        List<SmsCouponHistory> smsCouponHistoryList = smsCouponHistoryMapper.selectList(new LambdaQueryWrapper<SmsCouponHistory>()
-                .eq(SmsCouponHistory::getMemberId, memberId)
-                .eq(SmsCouponHistory::getCouponId, couponId)
-                .eq(SmsCouponHistory::getUseStatus, useStatus == 0 ? 1 : 0)
-        );
-        if (!CollectionUtils.isEmpty(smsCouponHistoryList)) {
-            SmsCouponHistory smsCouponHistory = smsCouponHistoryList.get(0);
-            smsCouponHistory.setUseTime(new Date());
-            smsCouponHistory.setUseStatus(useStatus);
-            smsCouponHistoryMapper.updateById(smsCouponHistory);
-        }
+    @Override
+    public Integer paySuccess(Long orderId, Integer payType) {
+        // 修改订单支付状态
+        OmsOrder order = new OmsOrder();
+        order.setId(orderId);
+        order.setStatus(1);
+        order.setPaymentTime(new Date());
+        order.setPayType(payType);
+        omsOrderMapper.updateById(order);
+        // 恢复所有下单商品的锁定库存，扣减真实库存
+        OmsOrderDetail orderDetail = gateOrderMapper.getDetail(orderId);
+        return gateOrderMapper.updateSkuStock(orderDetail.getOrderItemList());
     }
 
     @Override
@@ -321,6 +283,58 @@ public class OmsGateOrderServiceImpl implements OmsGateOrderService {
             }
         }
         return timeOutOrders.size();
+    }
+
+    @Override
+    public void cancelOrder(Long orderId) {
+        // 查询未付款的取消订单
+        List<OmsOrder> cancelOrderList = omsOrderMapper.selectList(new LambdaQueryWrapper<OmsOrder>().eq(OmsOrder::getId, orderId).eq(OmsOrder::getStatus, 0).eq(OmsOrder::getDeleteStatus, 0));
+        if (CollectionUtils.isEmpty(cancelOrderList)) {
+            return;
+        }
+        OmsOrder cancelOrder = cancelOrderList.get(0);
+        if (cancelOrder != null) {
+            // 修改订单状态为取消
+            cancelOrder.setStatus(4);
+            omsOrderMapper.updateById(cancelOrder);
+            List<OmsOrderItem> orderItemList = omsOrderItemMapper.selectList(new LambdaQueryWrapper<OmsOrderItem>().eq(OmsOrderItem::getOrderId, orderId));
+            // 解除订单商品库存锁定
+            if (!CollectionUtils.isEmpty(orderItemList)) {
+                gateOrderMapper.releaseSkuStockLock(orderItemList);
+            }
+            // 修改优惠券使用状态
+            updateCouponStatus(cancelOrder.getCouponId(), cancelOrder.getMemberId(), 0);
+            // 返还使用积分
+            if (cancelOrder.getUseIntegration() != null) {
+                UmsMember member = umsMemberService.getById(cancelOrder.getMemberId());
+                umsMemberService.updateIntegration(cancelOrder.getMemberId(), member.getIntegration() + cancelOrder.getUseIntegration());
+            }
+        }
+    }
+
+    /**
+     * 将优惠券信息更改为指定状态
+     *
+     * @param couponId  优惠券ID
+     * @param memberId  会员ID
+     * @param useStatus 0->未使用 1->已使用
+     */
+    private void updateCouponStatus(Long couponId, Long memberId, Integer useStatus) {
+        if (couponId == null) {
+            return;
+        }
+        // 查询第一张优惠券
+        List<SmsCouponHistory> smsCouponHistoryList = smsCouponHistoryMapper.selectList(new LambdaQueryWrapper<SmsCouponHistory>()
+                .eq(SmsCouponHistory::getMemberId, memberId)
+                .eq(SmsCouponHistory::getCouponId, couponId)
+                .eq(SmsCouponHistory::getUseStatus, useStatus == 0 ? 1 : 0)
+        );
+        if (!CollectionUtils.isEmpty(smsCouponHistoryList)) {
+            SmsCouponHistory smsCouponHistory = smsCouponHistoryList.get(0);
+            smsCouponHistory.setUseTime(new Date());
+            smsCouponHistory.setUseStatus(useStatus);
+            smsCouponHistoryMapper.updateById(smsCouponHistory);
+        }
     }
 
     /**

@@ -47,4 +47,20 @@ public class OmsGateOrderController {
         omsGateOrderService.sendDelayMessageCancelOrder(orderId);
         return CommonResult.success(null);
     }
+
+    @ApiOperation("用户支付成功的回调")
+    @PostMapping(value = "/paySuccess")
+    public CommonResult paySuccess(@RequestParam Long orderId, @RequestParam Integer payType) {
+        Integer count = omsGateOrderService.paySuccess(orderId, payType);
+        return CommonResult.success(count, "支付成功");
+    }
+
+    @ApiOperation("自动取消超时订单")
+    @PostMapping(value = "/cancelTimeOutOrder")
+    public CommonResult cancelTimeOutOrder() {
+        omsGateOrderService.cancelTimeOutOrder();
+        return CommonResult.success(null);
+    }
+
+
 }
