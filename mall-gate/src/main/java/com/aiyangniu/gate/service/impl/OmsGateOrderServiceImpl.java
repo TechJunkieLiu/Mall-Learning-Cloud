@@ -1,5 +1,8 @@
 package com.aiyangniu.gate.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import com.aiyangniu.common.api.CommonPage;
 import com.aiyangniu.common.exception.Asserts;
 import com.aiyangniu.common.service.RedisService;
 import com.aiyangniu.entity.model.bo.*;
@@ -18,6 +21,7 @@ import com.aiyangniu.gate.component.CancelOrderSender;
 import com.aiyangniu.gate.mapper.*;
 import com.aiyangniu.gate.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +32,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 前台订单管理实现类
@@ -253,6 +258,40 @@ public class OmsGateOrderServiceImpl implements OmsGateOrderService {
         // 恢复所有下单商品的锁定库存，扣减真实库存
         OmsOrderDetail orderDetail = gateOrderMapper.getDetail(orderId);
         return gateOrderMapper.updateSkuStock(orderDetail.getOrderItemList());
+    }
+
+    @Override
+    public CommonPage<OmsOrderDetail> list(Integer status, Integer pageNum, Integer pageSize) {
+        if (status == -1){
+            status = null;
+        }
+        UmsMember currentMember = umsMemberService.getCurrentMember();
+        PageHelper.startPage(pageNum, pageSize);
+        LambdaQueryWrapper<OmsOrder> lqw = new LambdaQueryWrapper<OmsOrder>().eq(OmsOrder::getDeleteStatus, 0).eq(OmsOrder::getMemberId, currentMember.getId()).eq(status != null, OmsOrder::getStatus, status).orderByDesc(OmsOrder::getCreateTime);
+        List<OmsOrder> orderList = omsOrderMapper.selectList(lqw);
+        CommonPage<OmsOrder> orderPage = CommonPage.restPage(orderList);
+        // 设置分页信息
+        CommonPage<OmsOrderDetail> resultPage = new CommonPage<>();
+        resultPage.setPageNum(orderPage.getPageNum());
+        resultPage.setPageSize(orderPage.getPageSize());
+        resultPage.setTotal(orderPage.getTotal());
+        resultPage.setTotalPage(orderPage.getTotalPage());
+        if(CollUtil.isEmpty(orderList)){
+            return resultPage;
+        }
+        // 设置数据信息
+        List<Long> orderIds = orderList.stream().map(OmsOrder::getId).collect(Collectors.toList());
+        List<OmsOrderItem> orderItemList = omsOrderItemMapper.selectBatchIds(orderIds);
+        List<OmsOrderDetail> orderDetailList = new ArrayList<>();
+        for (OmsOrder omsOrder : orderList) {
+            OmsOrderDetail orderDetail = new OmsOrderDetail();
+            BeanUtil.copyProperties(omsOrder, orderDetail);
+            List<OmsOrderItem> relatedItemList = orderItemList.stream().filter(item -> item.getOrderId().equals(orderDetail.getId())).collect(Collectors.toList());
+            orderDetail.setOrderItemList(relatedItemList);
+            orderDetailList.add(orderDetail);
+        }
+        resultPage.setList(orderDetailList);
+        return resultPage;
     }
 
     @Override

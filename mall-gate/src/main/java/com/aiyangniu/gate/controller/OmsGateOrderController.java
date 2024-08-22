@@ -1,10 +1,13 @@
 package com.aiyangniu.gate.controller;
 
+import com.aiyangniu.common.api.CommonPage;
 import com.aiyangniu.common.api.CommonResult;
 import com.aiyangniu.entity.model.bo.ConfirmOrderResult;
+import com.aiyangniu.entity.model.bo.OmsOrderDetail;
 import com.aiyangniu.entity.model.bo.OrderParam;
 import com.aiyangniu.gate.service.OmsGateOrderService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +63,18 @@ public class OmsGateOrderController {
     public CommonResult cancelTimeOutOrder() {
         omsGateOrderService.cancelTimeOutOrder();
         return CommonResult.success(null);
+    }
+
+    @ApiOperation("按状态分页获取用户订单列表")
+    @ApiImplicitParam(name = "status", value = "订单状态：-1->全部；0->待付款；1->待发货；2->已发货；3->已完成；4->已关闭", defaultValue = "-1", allowableValues = "-1,0,1,2,3,4", paramType = "query", dataType = "int")
+    @GetMapping(value = "/list")
+    public CommonResult<CommonPage<OmsOrderDetail>> list(
+            @RequestParam Integer status,
+            @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+            @RequestParam(required = false, defaultValue = "5") Integer pageSize
+    ) {
+        CommonPage<OmsOrderDetail> orderPage = omsGateOrderService.list(status, pageNum, pageSize);
+        return CommonResult.success(orderPage);
     }
 
 

@@ -1,6 +1,8 @@
 package com.aiyangniu.gate.service;
 
+import com.aiyangniu.common.api.CommonPage;
 import com.aiyangniu.entity.model.bo.ConfirmOrderResult;
+import com.aiyangniu.entity.model.bo.OmsOrderDetail;
 import com.aiyangniu.entity.model.bo.OrderParam;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,4 +66,14 @@ public interface OmsGateOrderService {
      */
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     Integer paySuccess(Long orderId, Integer payType);
+
+    /**
+     * 分页获取用户订单
+     *
+     * @param status 状态
+     * @param pageNum 当前页
+     * @param pageSize 页条数
+     * @return 用户订单列表
+     */
+    CommonPage<OmsOrderDetail> list(Integer status, Integer pageNum, Integer pageSize);
 }
