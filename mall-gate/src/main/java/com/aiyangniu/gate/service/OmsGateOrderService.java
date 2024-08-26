@@ -76,4 +76,12 @@ public interface OmsGateOrderService {
      * @return 用户订单列表
      */
     CommonPage<OmsOrderDetail> list(Integer status, Integer pageNum, Integer pageSize);
+
+    /**
+     * 根据订单ID获取订单详情
+     *
+     * @param orderId 订单ID
+     * @return 订单详情
+     */
+    OmsOrderDetail detail(Long orderId);
 }

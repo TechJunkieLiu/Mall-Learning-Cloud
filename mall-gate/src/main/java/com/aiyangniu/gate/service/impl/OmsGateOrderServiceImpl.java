@@ -261,40 +261,6 @@ public class OmsGateOrderServiceImpl implements OmsGateOrderService {
     }
 
     @Override
-    public CommonPage<OmsOrderDetail> list(Integer status, Integer pageNum, Integer pageSize) {
-        if (status == -1){
-            status = null;
-        }
-        UmsMember currentMember = umsMemberService.getCurrentMember();
-        PageHelper.startPage(pageNum, pageSize);
-        LambdaQueryWrapper<OmsOrder> lqw = new LambdaQueryWrapper<OmsOrder>().eq(OmsOrder::getDeleteStatus, 0).eq(OmsOrder::getMemberId, currentMember.getId()).eq(status != null, OmsOrder::getStatus, status).orderByDesc(OmsOrder::getCreateTime);
-        List<OmsOrder> orderList = omsOrderMapper.selectList(lqw);
-        CommonPage<OmsOrder> orderPage = CommonPage.restPage(orderList);
-        // 设置分页信息
-        CommonPage<OmsOrderDetail> resultPage = new CommonPage<>();
-        resultPage.setPageNum(orderPage.getPageNum());
-        resultPage.setPageSize(orderPage.getPageSize());
-        resultPage.setTotal(orderPage.getTotal());
-        resultPage.setTotalPage(orderPage.getTotalPage());
-        if(CollUtil.isEmpty(orderList)){
-            return resultPage;
-        }
-        // 设置数据信息
-        List<Long> orderIds = orderList.stream().map(OmsOrder::getId).collect(Collectors.toList());
-        List<OmsOrderItem> orderItemList = omsOrderItemMapper.selectBatchIds(orderIds);
-        List<OmsOrderDetail> orderDetailList = new ArrayList<>();
-        for (OmsOrder omsOrder : orderList) {
-            OmsOrderDetail orderDetail = new OmsOrderDetail();
-            BeanUtil.copyProperties(omsOrder, orderDetail);
-            List<OmsOrderItem> relatedItemList = orderItemList.stream().filter(item -> item.getOrderId().equals(orderDetail.getId())).collect(Collectors.toList());
-            orderDetail.setOrderItemList(relatedItemList);
-            orderDetailList.add(orderDetail);
-        }
-        resultPage.setList(orderDetailList);
-        return resultPage;
-    }
-
-    @Override
     public Integer cancelTimeOutOrder() {
         Integer count = 0;
         OmsOrderSetting orderSetting = omsOrderSettingMapper.selectById(1L);
@@ -349,6 +315,50 @@ public class OmsGateOrderServiceImpl implements OmsGateOrderService {
                 umsMemberService.updateIntegration(cancelOrder.getMemberId(), member.getIntegration() + cancelOrder.getUseIntegration());
             }
         }
+    }
+
+    @Override
+    public CommonPage<OmsOrderDetail> list(Integer status, Integer pageNum, Integer pageSize) {
+        if (status == -1){
+            status = null;
+        }
+        UmsMember currentMember = umsMemberService.getCurrentMember();
+        PageHelper.startPage(pageNum, pageSize);
+        LambdaQueryWrapper<OmsOrder> lqw = new LambdaQueryWrapper<OmsOrder>().eq(OmsOrder::getDeleteStatus, 0).eq(OmsOrder::getMemberId, currentMember.getId()).eq(status != null, OmsOrder::getStatus, status).orderByDesc(OmsOrder::getCreateTime);
+        List<OmsOrder> orderList = omsOrderMapper.selectList(lqw);
+        CommonPage<OmsOrder> orderPage = CommonPage.restPage(orderList);
+        // 设置分页信息
+        CommonPage<OmsOrderDetail> resultPage = new CommonPage<>();
+        resultPage.setPageNum(orderPage.getPageNum());
+        resultPage.setPageSize(orderPage.getPageSize());
+        resultPage.setTotal(orderPage.getTotal());
+        resultPage.setTotalPage(orderPage.getTotalPage());
+        if(CollUtil.isEmpty(orderList)){
+            return resultPage;
+        }
+        // 设置数据信息
+        List<Long> orderIds = orderList.stream().map(OmsOrder::getId).collect(Collectors.toList());
+        List<OmsOrderItem> orderItemList = omsOrderItemMapper.selectBatchIds(orderIds);
+        List<OmsOrderDetail> orderDetailList = new ArrayList<>();
+        for (OmsOrder omsOrder : orderList) {
+            OmsOrderDetail orderDetail = new OmsOrderDetail();
+            BeanUtil.copyProperties(omsOrder, orderDetail);
+            List<OmsOrderItem> relatedItemList = orderItemList.stream().filter(item -> item.getOrderId().equals(orderDetail.getId())).collect(Collectors.toList());
+            orderDetail.setOrderItemList(relatedItemList);
+            orderDetailList.add(orderDetail);
+        }
+        resultPage.setList(orderDetailList);
+        return resultPage;
+    }
+
+    @Override
+    public OmsOrderDetail detail(Long orderId) {
+        OmsOrder order = omsOrderMapper.selectById(orderId);
+        List<OmsOrderItem> orderItemList = omsOrderItemMapper.selectList(new LambdaQueryWrapper<OmsOrderItem>().eq(OmsOrderItem::getOrderId, orderId));
+        OmsOrderDetail orderDetail = new OmsOrderDetail();
+        BeanUtil.copyProperties(order, orderDetail);
+        orderDetail.setOrderItemList(orderItemList);
+        return orderDetail;
     }
 
     /**

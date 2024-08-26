@@ -77,5 +77,11 @@ public class OmsGateOrderController {
         return CommonResult.success(orderPage);
     }
 
+    @ApiOperation("根据ID获取订单详情")
+    @GetMapping(value = "/detail/{orderId}")
+    public CommonResult<OmsOrderDetail> detail(@PathVariable Long orderId) {
+        OmsOrderDetail orderDetail = omsGateOrderService.detail(orderId);
+        return CommonResult.success(orderDetail);
+    }
 
 }
