@@ -7895,8 +7895,8 @@ LABL 0 新宋体,8,N</a:FontList>
 </o:Column>
 <o:Column Id="o320">
 <a:ObjectID>9E4E0B0C-6DC6-4602-A1BB-BEF479CC25B4</a:ObjectID>
-<a:Name>feight_template_id</a:Name>
-<a:Code>feight_template_id</a:Code>
+<a:Name>freight_template_id</a:Name>
+<a:Code>freight_template_id</a:Code>
 <a:CreationDate>1521783613</a:CreationDate>
 <a:Creator>zhenghong</a:Creator>
 <a:ModificationDate>1521783636</a:ModificationDate>
@@ -9150,8 +9150,8 @@ LABL 0 新宋体,8,N</a:FontList>
 </o:Table>
 <o:Table Id="o240">
 <a:ObjectID>4C5F5ABA-B6AB-4689-9F04-B487E920C073</a:ObjectID>
-<a:Name>pms_feight_template</a:Name>
-<a:Code>pms_feight_template</a:Code>
+<a:Name>pms_freight_template</a:Name>
+<a:Code>pms_freight_template</a:Code>
 <a:CreationDate>1521782818</a:CreationDate>
 <a:Creator>zhenghong</a:Creator>
 <a:ModificationDate>1521783539</a:ModificationDate>

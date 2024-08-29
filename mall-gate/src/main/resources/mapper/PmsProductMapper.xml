@@ -6,7 +6,7 @@
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="brand_id" jdbcType="BIGINT" property="brandId" />
         <result column="product_category_id" jdbcType="BIGINT" property="productCategoryId" />
-        <result column="feight_template_id" jdbcType="BIGINT" property="feightTemplateId" />
+        <result column="freight_template_id" jdbcType="BIGINT" property="freightTemplateId" />
         <result column="product_attribute_category_id" jdbcType="BIGINT" property="productAttributeCategoryId" />
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="pic" jdbcType="VARCHAR" property="pic" />
