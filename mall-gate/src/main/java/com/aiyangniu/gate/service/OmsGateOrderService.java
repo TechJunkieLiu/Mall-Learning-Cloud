@@ -84,4 +84,18 @@ public interface OmsGateOrderService {
      * @return 订单详情
      */
     OmsOrderDetail detail(Long orderId);
+
+    /**
+     * 确认收货
+     *
+     * @param orderId 订单ID
+     */
+    void confirmReceiveOrder(Long orderId);
+
+    /**
+     * 用户根据订单ID删除订单
+     *
+     * @param orderId 订单ID
+     */
+    void deleteOrder(Long orderId);
 }

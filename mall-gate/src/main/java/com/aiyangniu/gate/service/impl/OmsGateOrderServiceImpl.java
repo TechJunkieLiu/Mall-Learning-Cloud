@@ -361,6 +361,37 @@ public class OmsGateOrderServiceImpl implements OmsGateOrderService {
         return orderDetail;
     }
 
+    @Override
+    public void confirmReceiveOrder(Long orderId) {
+        UmsMember member = umsMemberService.getCurrentMember();
+        OmsOrder order = omsOrderMapper.selectById(orderId);
+        if (!member.getId().equals(order.getMemberId())){
+            Asserts.fail("不能确认他人订单！");
+        }
+        if (order.getStatus() != 2){
+            Asserts.fail("该订单还未发货！");
+        }
+        order.setStatus(3);
+        order.setConfirmStatus(1);
+        order.setReceiveTime(new Date());
+        omsOrderMapper.updateById(order);
+    }
+
+    @Override
+    public void deleteOrder(Long orderId) {
+        UmsMember member = umsMemberService.getCurrentMember();
+        OmsOrder order = omsOrderMapper.selectById(orderId);
+        if (!member.getId().equals(order.getMemberId())){
+            Asserts.fail("不能删除他人订单！");
+        }
+        if (order.getStatus() == 3 || order.getStatus() == 4){
+            order.setDeleteStatus(1);
+            omsOrderMapper.updateById(order);
+        }else {
+            Asserts.fail("只能删除已完成或已关闭的订单！");
+        }
+    }
+
     /**
      * 将优惠券信息更改为指定状态
      *

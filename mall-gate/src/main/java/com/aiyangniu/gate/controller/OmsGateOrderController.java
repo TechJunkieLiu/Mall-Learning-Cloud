@@ -84,4 +84,24 @@ public class OmsGateOrderController {
         return CommonResult.success(orderDetail);
     }
 
+    @ApiOperation("用户取消订单")
+    @PostMapping(value = "/cancelUserOrder")
+    public CommonResult cancelUserOrder(Long orderId) {
+        omsGateOrderService.cancelOrder(orderId);
+        return CommonResult.success(null);
+    }
+
+    @ApiOperation("用户确认收货")
+    @PostMapping(value = "/confirmReceiveOrder")
+    public CommonResult confirmReceiveOrder(Long orderId) {
+        omsGateOrderService.confirmReceiveOrder(orderId);
+        return CommonResult.success(null);
+    }
+
+    @ApiOperation("用户删除订单")
+    @PostMapping(value = "/deleteOrder")
+    public CommonResult deleteOrder(Long orderId) {
+        omsGateOrderService.deleteOrder(orderId);
+        return CommonResult.success(null);
+    }
 }
