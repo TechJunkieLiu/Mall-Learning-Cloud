@@ -2,6 +2,8 @@ package com.aiyangniu.gate.controller;
 
 import com.aiyangniu.common.api.CommonPage;
 import com.aiyangniu.common.api.CommonResult;
+import com.aiyangniu.entity.model.bo.PmsGateProductDetail;
+import com.aiyangniu.entity.model.bo.PmsProductCategoryNode;
 import com.aiyangniu.entity.model.pojo.pms.PmsProduct;
 import com.aiyangniu.gate.service.PmsGateProductService;
 import io.swagger.annotations.Api;
@@ -9,10 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,7 +46,18 @@ public class PmsGateProductController {
         return CommonResult.success(CommonPage.restPage(productList));
     }
 
+    @ApiOperation("以树形结构获取所有商品分类")
+    @GetMapping(value = "/categoryTreeList")
+    public CommonResult<List<PmsProductCategoryNode>> categoryTreeList() {
+        List<PmsProductCategoryNode> list = pmsGateProductService.categoryTreeList();
+        return CommonResult.success(list);
+    }
 
-
+    @ApiOperation("获取前台商品详情")
+    @GetMapping(value = "/detail/{id}")
+    public CommonResult<PmsGateProductDetail> detail(@PathVariable Long id) {
+        PmsGateProductDetail productDetail = pmsGateProductService.detail(id);
+        return CommonResult.success(productDetail);
+    }
 
 }
