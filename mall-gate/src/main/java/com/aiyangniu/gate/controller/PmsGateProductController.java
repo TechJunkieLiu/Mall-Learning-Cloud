@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Api(value = "PmsGateProductController", tags = "前台商品管理")
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/gate/product")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class PmsGateProductController {
 
