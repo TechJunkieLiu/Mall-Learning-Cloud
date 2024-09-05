@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Api(value = "OmsGateOrderReturnApplyController", tags = "前台订单退货管理")
 @RestController
-@RequestMapping("/returnApply")
+@RequestMapping("/gate/returnApply")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class OmsGateOrderReturnApplyController {
 

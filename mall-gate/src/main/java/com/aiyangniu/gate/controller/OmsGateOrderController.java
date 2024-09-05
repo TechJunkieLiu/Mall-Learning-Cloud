@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @Api(value = "OmsGateOrderController", tags = "前台订单管理")
 @RestController
-@RequestMapping("/gateOrder")
+@RequestMapping("/gate/order")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class OmsGateOrderController {
 
