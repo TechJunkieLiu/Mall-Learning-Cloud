@@ -1,6 +1,8 @@
 package com.aiyangniu.gate.controller;
 
 import com.aiyangniu.common.api.CommonResult;
+import com.aiyangniu.common.domain.UserDTO;
+import com.aiyangniu.entity.model.pojo.ums.UmsMember;
 import com.aiyangniu.gate.service.UmsMemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,17 +24,24 @@ public class UmsMemberController {
 
     private final UmsMemberService umsMemberService;
 
+    @ApiOperation("会员注册")
+    @PostMapping(value = "/register")
+    public CommonResult register(@RequestParam String username, @RequestParam String password, @RequestParam String telephone, @RequestParam String authCode) {
+        umsMemberService.register(username, password, telephone, authCode);
+        return CommonResult.success(null,"注册成功");
+    }
+
     @ApiOperation("会员登录")
     @PostMapping(value = "/login")
     public CommonResult login(@RequestParam String username, @RequestParam String password) {
         return umsMemberService.login(username, password);
     }
 
-    @ApiOperation("会员注册")
-    @PostMapping(value = "/register")
-    public CommonResult register(@RequestParam String username, @RequestParam String password, @RequestParam String telephone, @RequestParam String authCode) {
-        umsMemberService.register(username, password, telephone, authCode);
-        return CommonResult.success(null,"注册成功");
+    @ApiOperation("获取当前会员信息")
+    @GetMapping(value = "/info")
+    public CommonResult info() {
+        UmsMember member = umsMemberService.getCurrentMember();
+        return CommonResult.success(member);
     }
 
     @ApiOperation("会员修改密码")
@@ -47,5 +56,11 @@ public class UmsMemberController {
     public CommonResult getAuthCode(@RequestParam String telephone) {
         String authCode = umsMemberService.generateAuthCode(telephone);
         return CommonResult.success(authCode,"获取验证码成功");
+    }
+
+    @ApiOperation("根据用户名获取通用用户信息")
+    @GetMapping(value = "/loadByUsername")
+    public UserDTO loadUserByUsername(@RequestParam String username) {
+        return umsMemberService.loadUserByUsername(username);
     }
 }

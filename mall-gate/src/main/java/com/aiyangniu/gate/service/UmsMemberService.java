@@ -1,6 +1,7 @@
 package com.aiyangniu.gate.service;
 
 import com.aiyangniu.common.api.CommonResult;
+import com.aiyangniu.common.domain.UserDTO;
 import com.aiyangniu.entity.model.pojo.ums.UmsMember;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,4 +73,12 @@ public interface UmsMemberService {
      */
     @Transactional(rollbackFor = RuntimeException.class)
     void updatePassword(String telephone, String password, String authCode);
+
+    /**
+     * 获取用户信息
+     *
+     * @param username 用户名
+     * @return 用户信息
+     */
+    UserDTO loadUserByUsername(String username);
 }

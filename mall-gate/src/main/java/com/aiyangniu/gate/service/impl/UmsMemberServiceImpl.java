@@ -1,5 +1,8 @@
 package com.aiyangniu.gate.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import cn.hutool.json.JSONUtil;
@@ -137,6 +140,26 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         umsMember.setPassword(BCrypt.hashpw(password));
         umsMemberMapper.updateById(umsMember);
         umsMemberCacheService.delMember(umsMember.getId());
+    }
+
+    @Override
+    public UserDTO loadUserByUsername(String username) {
+        UmsMember member = getByUsername(username);
+        if(ObjectUtil.isNotEmpty(member)){
+            UserDTO userDTO = new UserDTO();
+            BeanUtil.copyProperties(member, userDTO);
+            userDTO.setRoles(CollUtil.toList("前台会员"));
+            return userDTO;
+        }
+        return null;
+    }
+
+    private UmsMember getByUsername(String username) {
+        List<UmsMember> umsMemberList = umsMemberMapper.selectList(new LambdaQueryWrapper<UmsMember>().eq(UmsMember::getUsername, username));
+        if (!CollectionUtils.isEmpty(umsMemberList)) {
+            return umsMemberList.get(0);
+        }
+        return null;
     }
 
     /**
