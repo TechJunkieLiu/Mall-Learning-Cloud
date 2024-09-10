@@ -25,6 +25,7 @@ import java.util.List;
 public class UmsMemberReceiveAddressServiceImpl extends ServiceImpl<UmsMemberReceiveAddressMapper, UmsMemberReceiveAddress> implements UmsMemberReceiveAddressService {
 
     private final UmsMemberService umsMemberService;
+    private final UmsMemberReceiveAddressMapper umsMemberReceiveAddressMapper;
 
     @Override
     public List<UmsMemberReceiveAddress> list() {
@@ -40,5 +41,31 @@ public class UmsMemberReceiveAddressServiceImpl extends ServiceImpl<UmsMemberRec
             return addressList.get(0);
         }
         return null;
+    }
+
+    @Override
+    public int add(UmsMemberReceiveAddress address) {
+        UmsMember currentMember = umsMemberService.getCurrentMember();
+        address.setMemberId(currentMember.getId());
+        return umsMemberReceiveAddressMapper.insert(address);
+    }
+
+    @Override
+    public int delete(Long id) {
+        UmsMember currentMember = umsMemberService.getCurrentMember();
+        return umsMemberReceiveAddressMapper.delete(new LambdaQueryWrapper<UmsMemberReceiveAddress>().eq(UmsMemberReceiveAddress::getMemberId, currentMember.getId()).eq(UmsMemberReceiveAddress::getId, id));
+    }
+
+    @Override
+    public int update(Long id, UmsMemberReceiveAddress address) {
+        address.setId(null);
+        UmsMember currentMember = umsMemberService.getCurrentMember();
+        if (address.getDefaultStatus() == 1){
+            // 先将原来的默认地址去除
+            UmsMemberReceiveAddress receiveAddress = new UmsMemberReceiveAddress();
+            receiveAddress.setDefaultStatus(0);
+            umsMemberReceiveAddressMapper.update(receiveAddress, new LambdaQueryWrapper<UmsMemberReceiveAddress>().eq(UmsMemberReceiveAddress::getMemberId, currentMember.getId()).eq(UmsMemberReceiveAddress::getDefaultStatus, 1));
+        }
+        return umsMemberReceiveAddressMapper.update(address, new LambdaQueryWrapper<UmsMemberReceiveAddress>().eq(UmsMemberReceiveAddress::getMemberId, currentMember.getId()).eq(UmsMemberReceiveAddress::getId, id));
     }
 }
