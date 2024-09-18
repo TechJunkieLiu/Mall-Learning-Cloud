@@ -1,0 +1,82 @@
+version: '3'
+services:
+  mall-admin:
+    image: mall/mall-admin:1.0-SNAPSHOT
+    container_name: mall-admin
+    ports:
+      - 8801:8801
+    volumes:
+      - /mydata/app/mall-admin/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+    external_links:
+      - mysql:db #可以用db这个域名访问mysql服务
+      - nacos-registry:nacos-registry #可以用nacos-registry这个域名访问nacos服务
+  mall-search:
+    image: mall/mall-search:1.0-SNAPSHOT
+    container_name: mall-search
+    ports:
+      - 8807:8807
+    volumes:
+      - /mydata/app/mall-search/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+    external_links:
+      - elasticsearch:es #可以用es这个域名访问elasticsearch服务
+      - mysql:db #可以用db这个域名访问mysql服务
+      - nacos-registry:nacos-registry #可以用nacos-registry这个域名访问nacos服务
+  mall-gate:
+    image: mall/mall-gate:1.0-SNAPSHOT
+    container_name: mall-gate
+    ports:
+      - 8804:8804
+    volumes:
+      - /mydata/app/mall-gate/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+    external_links:
+      - redis:redis #可以用redis这个域名访问redis服务
+      - mongo:mongo #可以用mongo这个域名访问mongo服务
+      - mysql:db #可以用db这个域名访问mysql服务
+      - rabbitmq:rabbit #可以用rabbit这个域名访问rabbitmq服务
+      - nacos-registry:nacos-registry #可以用nacos-registry这个域名访问nacos服务
+  mall-auth:
+    image: mall/mall-auth:1.0-SNAPSHOT
+    container_name: mall-auth
+    ports:
+      - 8802:8802
+    volumes:
+      - /mydata/app/mall-auth/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+    external_links:
+      - nacos-registry:nacos-registry #可以用nacos-registry这个域名访问nacos服务
+  mall-gateway:
+    image: mall/mall-gateway:1.0-SNAPSHOT
+    container_name: mall-gateway
+    ports:
+      - 8805:8805
+    volumes:
+      - /mydata/app/mall-gateway/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+    external_links:
+      - redis:redis #可以用redis这个域名访问redis服务
+      - nacos-registry:nacos-registry #可以用nacos-registry这个域名访问nacos服务
+  mall-monitor:
+    image: mall/mall-monitor:1.0-SNAPSHOT
+    container_name: mall-monitor
+    ports:
+      - 8806:8806
+    volumes:
+      - /mydata/app/mall-monitor/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+    external_links:
+      - nacos-registry:nacos-registry #可以用nacos-registry这个域名访问nacos服务
