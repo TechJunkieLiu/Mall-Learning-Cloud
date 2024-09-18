@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mall-gate-service
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: mall-gate
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8804
+      targetPort: 8804
