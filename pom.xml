@@ -32,7 +32,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <skipTests>true</skipTests>
         <spring-boot-maven-plugin.version>2.3.0.RELEASE</spring-boot-maven-plugin.version>
-        <docker.host>http://192.168.146.27:2375</docker.host>
+        <docker.host>http://192.168.146.28:22</docker.host>
         <docker.maven.plugin.version>1.2.2</docker.maven.plugin.version>
         <java.version>1.8</java.version>
         <spring-cloud.version>Hoxton.SR5</spring-cloud.version>
@@ -364,7 +364,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <imageName>mall/${project.artifactId}:${project.version}</imageName>
+                        <imageName>mall-learning-cloud/${project.artifactId}:${project.version}</imageName>
                         <dockerHost>${docker.host}</dockerHost>
                         <baseImage>java:8</baseImage>
                         <entryPoint>["java", "-jar", "-Dspring.profiles.active=prod","/${project.build.finalName}.jar"]</entryPoint>
