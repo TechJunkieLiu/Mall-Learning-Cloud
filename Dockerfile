@@ -18,8 +18,8 @@
 FROM xldevops/jdk17-lts:latest
 RUN mkdir -p /opt/test-docker
 WORKDIR /opt/test-docker
-COPY test-docker.jar /opt/test-docker/test-docker.jar
-CMD ["java","-jar", "/opt/test-docker/test-docker.jar"]
+COPY mall-learning-cloud.jar /opt/test-docker/mall-learning-cloud.jar
+CMD ["java","-jar", "/opt/test-docker/mall-learning-cloud.jar"]
 
 
 
