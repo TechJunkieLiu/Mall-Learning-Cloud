@@ -59,34 +59,32 @@ mall-learning-cloud
 ### 1、服务器规划
 两台服务器部署所有服务：
 - 基础服务器（192.168.146.27）：用于部署mall-learning-cloud的依赖服务，包括MySQL、Redis、Elasticsearch等与应用无关的服务，采用Docker方式来部署。
-- 应用服务器（192.168.146.28）：用于部署mall-swarm的应用服务，包括mall-admin、mall-gate、mall-search等应用服务，采用K8S方式来部署。
-### 2、基础服务器环境搭建（基于Docker）
+- 应用服务器（192.168.146.28）：用于部署mall-learning-cloud的应用服务，包括mall-admin、mall-gate、mall-search等应用服务，采用K8S方式来部署。
+### 2、基础服务器部署
+- 基于Docker命令方式，参考 Mall-Learning
+- 基于[Docker Compose 脚本](D:\workspace_learning\two\Mall-Learning-Cloud\document\docker\docker-compose-env.yml)方式，执行命令 `docker-compose -f docker-compose-env.yml up -d`
+
 | 工具          | 版本号 | 下载                                                         |
 | ------------- | ------ | ------------------------------------------------------------ |
 | JDK           | 1.8    | https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html |
 | Mysql         | 5.7    | https://www.mysql.com/                                       |
-| Redis         | 5.0    | https://redis.io/download                                    |
-| Elasticsearch | 7.6.2  | https://www.elastic.co/cn/downloads/elasticsearch            |
-| Kibana        | 7.6.2  | https://www.elastic.co/cn/downloads/kibana                   |
-| Logstash      | 7.6.2  | https://www.elastic.co/cn/downloads/logstash                 |
-| MongoDb       | 4.2.5  | https://www.mongodb.com/download-center                      |
-| RabbitMq      | 3.7.14 | http://www.rabbitmq.com/download.html                        |
-| nginx         | 1.10   | http://nginx.org/en/download.html                            |
+| Redis         | 7.0    | https://redis.io/download                                    |
+| Elasticsearch | 7.17.3 | https://www.elastic.co/cn/downloads/elasticsearch            |
+| Kibana        | 7.17.3 | https://www.elastic.co/cn/downloads/kibana                   |
+| Logstash      | 7.17.3 | https://www.elastic.co/cn/downloads/logstash                 |
+| MongoDb       | 4.0    | https://www.mongodb.com/download-center                      |
+| RabbitMq      | 3.10.0 | http://www.rabbitmq.com/download.html                        |
+| nginx         | 1.22   | http://nginx.org/en/download.html                            |
 
-参考mall-learning
-
-### 3、项目部署
-- 镜像打包及推送（为了方便部署，把所有应用镜像都上传到DockerHub上）
+### 3、应用服务器部署
+- 镜像打包及推送（为了方便部署，把所有应用镜像都上传到DockerHub或者上传到私有镜像仓库Docker Registry或者参考 Mall-Learning）
   - 修改项目根目录的pom.xml中的docker.host属性
   - 使用Maven插件将所有镜像打包到Linux服务器上，直接使用根项目下的package命令即可
-  - 修改所有镜像标签名称，修改本地镜像标签名称为远程镜像标签名称
+  - 修改所有镜像标签名称，修改本地镜像标签名称为远程镜像标签名称，`docker tag mall/mall-gateway:1.0-SNAPSHOT lzqdocker/mall-gateway:1.0-SNAPSHOT`
   - 修改完成后查询lzqdocker相关镜像（lzqdocker为我们在Docker Hub上的仓库地址），`docker images | grep lzqdocker`
   - 之后推送镜像到Docker Hub（如果不想自己推送镜像，可以使用已经上传好到镜像）
     - 登录Docker Hub，`docker login`
     - 推送到远程仓库，`docker push lzqdocker/mall-admin:1.0-SNAPSHOT`
-- 基础服务器部署（基于Docker）
-  - 参考 mall-learning 或使用 [Docker Compose 脚本](D:\workspace_learning\two\Mall-Learning-Cloud\document\docker\docker-compose-env.yml)，执行命令 `docker-compose -f docker-compose-env.yml up -d`
-  - 查看 Docker 中运行服务，`docker ps`
 - 应用服务器部署（将所有应用服务都部署到K8S上，使用Rancher来进行可视化管理）  
   - 安装Rancher
     - 下载镜像 `docker pull rancher/rancher:v2.5-head`

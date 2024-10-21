@@ -32,7 +32,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <skipTests>true</skipTests>
         <spring-boot-maven-plugin.version>2.3.0.RELEASE</spring-boot-maven-plugin.version>
-        <docker.host>http://192.168.146.28:22</docker.host>
+        <docker.host>http://192.168.146.28:2375</docker.host>
         <docker.maven.plugin.version>1.2.2</docker.maven.plugin.version>
         <java.version>1.8</java.version>
         <spring-cloud.version>Hoxton.SR5</spring-cloud.version>
@@ -353,10 +353,10 @@
                     <groupId>com.spotify</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>${docker.maven.plugin.version}</version>
-                    <!-- 如果想在项目打包时构建镜像添加 -->
                     <executions>
                         <execution>
                             <id>build-image</id>
+                            <!--在打包应用时构建镜像-->
                             <phase>package</phase>
                             <goals>
                                 <goal>build</goal>
@@ -364,14 +364,21 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <imageName>mall-learning-cloud/${project.artifactId}:${project.version}</imageName>
+                        <!--仓库名称/镜像名称:镜像版本号-->
+                        <imageName>mall/${project.artifactId}:${project.version}</imageName>
+                        <!--打包后上传到的docker服务器地址-->
                         <dockerHost>${docker.host}</dockerHost>
-                        <baseImage>java:8</baseImage>
+                        <!--该应用所依赖的基础镜像-->
+                        <baseImage>openjdk:8</baseImage>
+                        <!--docker容器启动时执行的命令-->
                         <entryPoint>["java", "-jar", "-Dspring.profiles.active=prod","/${project.build.finalName}.jar"]</entryPoint>
                         <resources>
                             <resource>
+                                <!--将打包后的资源文件复制到该目录-->
                                 <targetPath>/</targetPath>
+                                <!--需要复制的文件所在目录，maven打包的应用jar包保存在target目录下面-->
                                 <directory>${project.build.directory}</directory>
+                                <!--需要复制的文件，打包好的应用jar包-->
                                 <include>${project.build.finalName}.jar</include>
                             </resource>
                         </resources>
