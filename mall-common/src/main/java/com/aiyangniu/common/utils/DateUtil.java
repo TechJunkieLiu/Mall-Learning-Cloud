@@ -28,7 +28,8 @@ public class DateUtil {
     private static final String DATE_FORMAT_STR = "yyyy-MM-dd";
     private static final String TIME_FORMAT_STR = "HH:mm:ss";
     private static final String DATE_TIME_FORMAT_STR = "yyyy-MM-dd HH:mm:ss";
-    private static final String DATE_TIME_LONG_FORMAT_STR = "yyyyMMddHHmmSSS";
+    private static final String DATE_TIME_LONG_FORMAT_STR = "yyyyMMddHHmmss";
+    private static final String DATE_TIME_LONGS_FORMAT_STR = "yyyyMMddHHmmSSS";
 
     /**
      * 从Date类型的时间中提取日期部分
@@ -59,7 +60,7 @@ public class DateUtil {
      */
     public static String getIdByDateTime(){
         Date now = new Date();
-        SimpleDateFormat simple = new SimpleDateFormat(DATE_TIME_LONG_FORMAT_STR);
+        SimpleDateFormat simple = new SimpleDateFormat(DATE_TIME_LONGS_FORMAT_STR);
         return simple.format(now);
     }
 
@@ -91,15 +92,19 @@ public class DateUtil {
     public static Date str2Date(String date){
         SimpleDateFormat simple = null;
         switch (date.trim().length()){
-            // 日期+时间
+            // 日期+时间（yyyy-MM-dd HH:mm:ss）
             case 19:
                 simple = new SimpleDateFormat(DATE_TIME_FORMAT_STR);
                 break;
-            // 日期
+            // 日期+时间（yyyyMMddHHmmss）
+            case 14:
+                simple = new SimpleDateFormat(DATE_TIME_LONG_FORMAT_STR);
+                break;
+            // 日期（yyyy-MM-dd）
             case 10:
                 simple = new SimpleDateFormat(DATE_FORMAT_STR);
                 break;
-            // 时间
+            // 时间（HH:mm:ss）
             case 8:
                 simple = new SimpleDateFormat(TIME_FORMAT_STR);
                 break;
