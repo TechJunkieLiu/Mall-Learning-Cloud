@@ -29,7 +29,7 @@ public class NumberUtil {
     /**
      * 身份证号码正则
      */
-    private final static String ID_CARD = "(^\\d{15}$)|(^\\d{18}$)|(^\\d{17}(\\d|X|x)$)";
+    private final static String ID_CARD = "^[1-9]\\d{5}(18|19|20)\\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$";
 
     /**
      * 验证是否为手机号码
